@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Todohogar Chillán | Hogar y mejoramiento</title>
+<!-- RÚBRICA · Visualización 3D: <model-viewer> de Google vía CDN -->
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+<!-- Llamado al archivo de estilos CSS -->
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#top">Todo<b>hogar</b> Chillán</a>
+    <input class="search" id="q" type="search" placeholder="Buscar productos…">
+    <a class="l" href="#catalogo">Catálogo</a>
+    <a class="l" href="#simulador">Simulador 3D</a>
+    <a class="l" href="#logistica">Logística e Instalación</a>
+    <div class="navr">
+      <button class="btn o sm" id="btnLogin">Ingresar / Mi Cuenta</button>
+      <span id="userBox" hidden><span class="user" id="userName"></span> <button class="btn o sm" id="btnLogout">Cerrar sesión</button></span>
+      <a class="cartbtn" href="#resumen">🛒 Carro<span id="cnt">0</span></a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <h1>Mejora tu hogar con despacho e instalación en toda Ñuble</h1>
+    <p>Productos voluminosos con cálculo de despacho por comuna e instalación domiciliaria certificada.</p>
+    <a class="btn" href="#catalogo">Ver catálogo</a>
+  </div>
+</header>
+
+<section id="catalogo"><div class="wrap">
+  <h2>Catálogo</h2>
+  <p class="sub">Hogar y mejoramiento · productos voluminosos y complementarios</p>
+  
+  <h3 class="grp" id="grpMain">Productos principales · Destacados con Visor 3D</h3>
+  <div class="grid" id="gridMain"></div>
+  
+  <h3 class="grp" id="grpExtra">Productos complementarios · Con Visor 3D</h3>
+  <div class="grid" id="gridExtra"></div>
+  
+  <p class="empty" id="noRes" hidden>No se encontraron productos.</p>
+</div></section>
+
+<!-- SIMULADOR 3D -->
+<section id="simulador" style="background:#fff"><div class="wrap">
+  <h2>Simulador 3D</h2>
+  <p class="sub">Gira con el mouse o el dedo, acerca con la rueda / pellizco.</p>
+  <div class="v3d">
+    <model-viewer id="mv" alt="Modelo 3D del producto" camera-controls auto-rotate
+      shadow-intensity="1" ar ar-modes="webxr scene-viewer quick-look">
+      <div slot="poster" style="display:grid;place-items:center;height:100%">Cargando modelo 3D…</div>
+    </model-viewer>
+    <div class="panel">
+      <h3 id="mvTitle"></h3>
+      <p class="meta" id="mvDesc" style="margin-bottom:8px;"></p>
+      <div class="specs-box" id="mvSpecs"></div>
+      <button class="btn" id="mvAdd" style="width:100%">Agregar este producto al carro</button>
+    </div>
+  </div>
+</div></section>
+
+<section id="logistica"><div class="wrap">
+  <h2>Logística e Instalación</h2>
+  <p class="sub">Valida el despacho de carga pesada para tu comuna.</p>
+  <div class="two">
+    <div class="panel">
+      <h3>Tu comuna en Ñuble</h3>
+      <label for="comuna">Comuna de despacho</label>
+      <select id="comuna"></select>
+      <div class="note" id="zoneInfo"></div>
+      <label class="chk"><input type="checkbox" id="inst">
+        <span>Servicio de Instalación Domiciliaria Certificada<br><small class="meta" id="instInfo"></small></span></label>
+    </div>
+    <div class="panel">
+      <h3>Reglas de despacho</h3>
+      <p class="meta">• Despacho base según zona (urbana, periurbana o rural).<br>
+      • Se aplica <b>recargo por carga pesada</b> si algún producto del carro supera 30 kg.<br>
+      • La instalación se cobra por producto instalable y varía según la zona.<br>
+      • Los valores son simulados para este prototipo.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="resumen" style="background:#fff"><div class="wrap">
+  <h2>Resumen de compra</h2>
+  <p class="sub">Subtotal + despacho + instalación, en pesos chilenos.</p>
+  <div class="two">
+    <div class="panel"><h3>Tu carro</h3><div id="items"></div></div>
+    <div class="panel">
+      <h3>Total a pagar</h3>
+      <div class="line"><span>Subtotal productos</span><span id="sSub">$0</span></div>
+      <div class="line"><span>Despacho base</span><span id="sDesp">$0</span></div>
+      <div class="line"><span>Recargo carga pesada</span><span id="sRec">$0</span></div>
+      <div class="line"><span>Instalación certificada</span><span id="sInst">$0</span></div>
+      <div class="line t"><span>Total</span><span id="sTot">$0</span></div>
+      <div class="note err" id="payErr" hidden></div>
+      <button class="btn" id="pay" style="width:100%;margin-top:14px">Ir a pagar</button>
+    </div>
+  </div>
+</div></section>
+
+<footer>© 2026 Todohogar Chillán · Prototipo para la EVA 3 e-commerce</footer>
+
+<!-- MODAL LOGIN / REGISTRO -->
+<div class="modal" id="authModal"><div class="mbox">
+  <button class="x" id="authClose" aria-label="Cerrar">×</button>
+  <h3 style="margin-bottom:12px">Mi cuenta</h3>
+  <div class="tabs"><button id="tabIn" class="on">Ingresar</button><button id="tabUp">Registrarme</button></div>
+  <form id="authForm" novalidate>
+    <input class="fld" id="aName" placeholder="Nombre" autocomplete="name" hidden>
+    <input class="fld" id="aMail" type="email" placeholder="Correo electrónico" autocomplete="email">
+    <input class="fld" id="aPass" type="password" placeholder="Contraseña (mín. 6 caracteres)" autocomplete="current-password">
+    <div class="note err" id="authErr" hidden></div>
+    <button class="btn" id="authSubmit" style="width:100%;margin-top:6px">Ingresar</button>
+  </form>
+  <p class="meta" style="margin-top:10px">Sesión simulada: los datos se guardan solo en este navegador (localStorage).</p>
+</div></div>
+
+<!-- MODAL DE PAGO -->
+<div class="modal" id="payModal"><div class="mbox" id="payBox"></div></div>
+
+<!-- Llamado al archivo de script JavaScript -->
+<script src="script.js"></script>
+</body>
+</html>
