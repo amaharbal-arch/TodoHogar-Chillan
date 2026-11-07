@@ -31,32 +31,32 @@ const PRODUCTS = [
     img:'https://res.cloudinary.com/deqk2tmer/image/upload/v1793840292/panel_jsscju.png'
   },
   {
-    id: 'volcanita', 
-    name: 'Placa de Yeso-Cartón Volcanita ST', 
+    id: 'vanitorio_madera', 
+    name: 'Vanitorio de Madera Noble con Cubierta de Mármol', 
     cat: 'Mejoramiento', 
-    price: 8990, 
-    pesoKg: 18, 
-    inst: 8000, 
-    emoji: '🏗️', 
+    price: 149900, 
+    pesoKg: 32, 
+    inst: 25000, 
+    emoji: '🪞', 
     bg: '#ffffff',
-    desc: 'Placa estándar para tabiquería y revestimiento de muros interiores en proyectos habitacionales.',
-    specs: '<b>Dimensiones:</b> 1.20 x 2.40m<br><b>Espesor:</b> 10mm<br><b>Uso:</b> Tabiquería interior',
-    glbSrc: 'https://modelviewer.dev/shared-assets/models/Cube.glb',
-    img: null
+    desc: 'Mueble vanitorio de madera con lavavoz empotrado y cajonera lateral. Diseño elegante para baños residenciales. Activa recargo por carga pesada.',
+    specs: '<b>Dimensiones:</b> 100 x 50 x 85 cm<br><b>Material:</b> Madera noble y mármol sintético<br><b>Incluye:</b> Grifería monomando',
+    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794012647/Bathroom_vanity_3D_qewkny.glb', // Reemplazar con tu enlace GLB definitivo
+    img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794012637/Bathroom_vanity_fdyz5p.png'
   },
   {
-    id: 'ceramico', 
-    name: 'Pallet de Porcelanato Retificado 60x60 cm', 
+    id: 'estufa_pellet', 
+    name: 'Estufa a Pellet de Alta Eficiencia', 
     cat: 'Carga pesada', 
-    price: 119990, 
-    pesoKg: 35, 
-    inst: 70000, 
-    emoji: '🧱', 
+    price: 549990, 
+    pesoKg: 85, 
+    inst: 60000, 
+    emoji: '🔥', 
     bg: '#ffffff',
-    desc: 'Set de revestimiento porcelanato de alta resistencia para pisos y muros residenciales. Activa el recargo de carga pesada.',
-    specs: '<b>Rendimiento:</b> 32 m² por pallet<br><b>Tránsito:</b> Comercial moderado / Residencial<br><b>Terminación:</b> Esmaltado brillante',
-    glbSrc: 'https://modelviewer.dev/shared-assets/models/glTF-Sample-Models/2.0/DamagedHelmet/glTF-Binary/DamagedHelmet.glb',
-    img: null
+    desc: 'Sistema de calefacción ecológica para el hogar con estanque de alta capacidad. Ideal para el invierno en Ñuble.',
+    specs: '<b>Potencia:</b> 9 kW (hasta 120 m²)<br><b>Estanque:</b> 15 kg<br><b>Consumo:</b> 0.8 - 1.8 kg/h',
+    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794012825/estufa_3d_wood_stove_wmwohu.glb', 
+    img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794012817/estufa_aueaab.png'
   },
 
   // --- 4 PRODUCTOS COMPLEMENTARIOS ---
@@ -75,47 +75,44 @@ const PRODUCTS = [
     img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1793999100/taladro_ekcx2b.png'
   },
   {
-    id: 'griferia', 
-    name: 'Grifería Monomando Alta para Lavatorio', 
+    id: 'lampara_mural', 
+    name: 'Apliqué de Pared Estilo Clásico con Cúpula', 
     cat: 'Accesorios', 
-    price: 34990, 
-    pesoKg: 3, 
-    inst: 18000, 
-    emoji: '🚰', 
-    bg: '#e4e7eb',
-    desc: 'Llave monomando de acero cromado con cartucho cerámico para ahorro de agua en lavamanos.',
-    specs: '<b>Altura:</b> 28 cm (caño alto)<br><b>Material:</b> Aleación de zinc y bronce cromado<br><b>Incluye:</b> Flexibles de conexión',
-    glbSrc: 'https://modelviewer.dev/shared-assets/models/NeilArmstrong.glb', 
-    img: null
+    price: 19990, 
+    pesoKg: 2, 
+    inst: 12000, 
+    bg: '#ffffff',
+    desc: 'Lámpara de muro decorativa con base de bronce envejecido y pantalla de vidrio opal con relieve.',
+    specs: '<b>Socket:</b> E27 (compatible LED)<br><b>Material:</b> Aleación metálica y vidrio texturizado<br><b>Uso:</b> Interior / Exterior techado',
+    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013036/victorian_wall_lamp_cxmzct.glb', 
+    img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013028/lampara_oigotu.png'
   },
-  {
-    id: 'barniz', 
-    name: 'Barniz Marítimo Protector Madera 1 Galón', 
-    cat: 'Insumos', 
-    price: 27990, 
+ {
+    id: 'vanitorio_ceramica', 
+    name: 'Vanitorio Compacto con Loza Blanca', 
+    cat: 'Mejoramiento', 
+    price: 89990, 
+    pesoKg: 24, 
+    inst: 18000, 
+    bg: '#ffffff',
+    desc: 'Mueble de piso con patas cromadas y lavamanos de loza incorporado, optimizado para espacios modernos.',
+    specs: '<b>Dimensiones:</b> 60 x 45 x 80 cm<br><b>Material:</b> Melamina antihumedad y loza<br><b>Uso:</b> Baños principales o de visitas',
+    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013140/sink_with_faucet_g7qbu5.glb', 
+    img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013137/lavamano_qfe0yz.png'
+  },
+ {
+    id: 'caja_herramientas', 
+    name: 'Caja de Herramientas Modular de Alto Impacto', 
+    cat: 'Herramientas', 
+    price: 24990, 
     pesoKg: 4, 
     inst: 0, 
-    emoji: '🎨', 
-    bg: '#fde8d9',
-    desc: 'Barniz sintético de alta durabilidad con filtro UV para protección de estructuras de madera expuestas al clima.',
-    specs: '<b>Rendimiento:</b> 40 m² por galón/mano<br><b>Secado:</b> 4 horas al tacto<br><b>Protección:</b> Antihongo y rayos UV',
-    glbSrc: 'https://modelviewer.dev/shared-assets/models/Cube.glb', 
-    img: null
+    bg: '#ffffff',
+    desc: 'Maleta organizadora reforzada con cierres metálicos y bandeja interior para herramientas de mano y accesorios.',
+    specs: '<b>Material:</b> Polímero industrial reforzado<br><b>Capacidad:</b> 22 pulgadas<br><b>Seguridad:</b> Cierres metálicos antideslizantes',
+    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013242/toolbox_dpoevg.glb', 
+    img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013238/caja_de_herramientas_gjlplh.png'
   },
-  {
-    id: 'panel', 
-    name: 'Panel Decorativo Mural de Madera', 
-    cat: 'Decoración', 
-    price: 64990, 
-    pesoKg: 14, 
-    inst: 25000, 
-    emoji: '🪵', 
-    bg: '#e4e7eb',
-    desc: 'Pack de paneles murales texturizados para revestimiento interior y mejoramiento estético de espacios.',
-    specs: '<b>Dimensiones:</b> 120x60 cm por panel<br><b>Contenido:</b> Pack de 4 unidades<br><b>Instalación:</b> Directa con adhesivo',
-    glbSrc: 'https://modelviewer.dev/shared-assets/models/Box.glb', 
-    img: null
-  }
 ];
 
 const ZONES = {
