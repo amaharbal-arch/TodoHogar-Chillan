@@ -2,13 +2,13 @@ const CLP = n => '$' + Math.round(n).toLocaleString('es-CL');
 const $ = id => document.getElementById(id);
 
 const FLOW_CONFIG = {
-  apiKey:     'TODO_INSERTAR_API_KEY_SANDBOX',
-  commerceId: 'TODO_INSERTAR_COMMERCE_ID_SANDBOX',
-  return_url: 'https://TU-DOMINIO.cl/flow/retorno',
-  confirm_url:'https://TU-DOMINIO.cl/api/flow/confirmacion',
-  sandboxUrl: 'https://sandbox.flow.cl/api/payment/create',
+  apiKey:      '359FDDFB-986D-4813-B1DA-21L879B274A9',
+  commerceId:  '25693da24b99461c9c71ae945371889033f02861',
+  return_url:  'https://todohogar-chillan.vercel.app/', // O la URL pública de su Vercel
+  confirm_url: 'https://todohogar-chillan.vercel.app/',
+  sandboxUrl:  'https://sandbox.flow.cl/api/payment/create',
   backendCreateUrl: null,
-  simulate: true
+  simulate: false
 };
 
 /* =====================================================================
