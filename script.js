@@ -5,7 +5,7 @@ const FLOW_CONFIG = {
   apiKey:      '359FDDFB-986D-4813-B1DA-21L879B274A9',
   secretKey:   '25693da24b99461c9c71ae945371889033f02861',
   return_url:  'https://todohogarchillan.vercel.app/',
-  confirm_url: 'https://todohogarchillan.vercel.app/',
+  confirm_url: 'https://todohogarchillan.vercel.app/api/flow',
   sandboxUrl:  'https://sandbox.flow.cl/api/payment/create',
   simulate:    false
 };
