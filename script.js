@@ -400,11 +400,7 @@ const Checkout = (() => {
       return;
     }
     
-    // Si estuviera en modo simulación
-    const safe = {...data, apiKey: data.apiKey.slice(0,6) + '…'};
-    openModal(`<h3>Redirigiendo a Flow (Sandbox)…</h3>
-      <p class="meta">Simulación activada.</p>`);
-  }
+
 
     const safe = {...data, apiKey: data.apiKey.slice(0,6) + '…'};
     openModal(`<h3>Redirigiendo a Flow (Sandbox)…</h3>
