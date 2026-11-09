@@ -125,56 +125,123 @@ const COMUNAS = {
   'Coihueco':'periurbana','El Carmen':'rural','Pemuco':'rural','Yungay':'rural','Quillón':'periurbana','San Ignacio':'rural','Quirihue':'rural'
 };
 
+// 1. Inicializamos el cliente oficial de Supabase con sus credenciales exactas
+const SUPABASE_URL = 'https://jbanwtqelgjrvvvmyofu.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_g9Q1remR_r4gfNeofCNVFQ_GAoNtBvb';
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const Auth = (() => {
-  const USERS = 'th_users', SESSION = 'th_session';
-  let mode = 'in', afterLogin = null;
-  const read = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } };
-  const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} };
-  async function hash(txt){
-    try { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(txt));
-          return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2,'0')).join(''); }
-    catch { return btoa(unescape(encodeURIComponent(txt))); }
-  }
-  const current = () => read(SESSION, null);
+  let mode = 'in', afterLogin = null, currentUser = null;
+
+  // 2. Retorna el usuario activo en memoria para que Checkout valide la sesión
+  const current = () => currentUser;
+
+  // 3. Renderiza la interfaz: muestra/oculta botones de login/logout y nombre de usuario
   function render(){
-    const s = current();
-    $('btnLogin').hidden = !!s; $('userBox').hidden = !s;
-    if (s) $('userName').textContent = '👤 ' + s.name;
+    $('btnLogin').hidden = !!currentUser; 
+    $('userBox').hidden = !currentUser;
+    if (currentUser) {
+      const displayName = currentUser.user_metadata?.full_name || currentUser.email;
+      $('userName').textContent = '👤 ' + displayName;
+    }
   }
+
+  // 4. Cambia dinámicamente entre el formulario de Login ('in') y Registro ('up')
   function setMode(m){
     mode = m;
-    $('tabIn').classList.toggle('on', m === 'in'); $('tabUp').classList.toggle('on', m === 'up');
+    $('tabIn').classList.toggle('on', m === 'in'); 
+    $('tabUp').classList.toggle('on', m === 'up');
     $('aName').hidden = m === 'in';
     $('authSubmit').textContent = m === 'in' ? 'Ingresar' : 'Crear cuenta';
     $('aPass').autocomplete = m === 'in' ? 'current-password' : 'new-password';
     error('');
   }
+
+  // 5. Muestra mensajes de error en pantalla si falla la autenticación
   function error(msg){ $('authErr').hidden = !msg; $('authErr').textContent = msg; }
+  
+  // 6. Abre el modal de autenticación y guarda la acción pendiente tras hacer login
   function open(cb, msg){ afterLogin = cb || null; setMode('in'); $('authForm').reset(); if (msg) error(msg); $('authModal').classList.add('on'); }
+  
+  // 7. Cierra el modal de autenticación
   function close(){ $('authModal').classList.remove('on'); afterLogin = null; }
+
+  // 8. Procesa el formulario enviando los datos directamente a Supabase Cloud
   async function submit(e){
     e.preventDefault();
-    const mail = $('aMail').value.trim().toLowerCase(), pass = $('aPass').value, name = $('aName').value.trim();
+    const mail = $('aMail').value.trim().toLowerCase();
+    const pass = $('aPass').value;
+    const name = $('aName').value.trim();
+
     if (!/^\S+@\S+\.\S+$/.test(mail)) return error('Ingresa un correo válido.');
     if (pass.length < 6) return error('La contraseña debe tener al menos 6 caracteres.');
-    const users = read(USERS, {}), h = await hash(pass);
-    if (mode === 'up') {
-      if (!name) return error('Ingresa tu nombre.');
-      if (users[mail]) return error('Ese correo ya está registrado.');
-      users[mail] = {name, hash: h}; write(USERS, users);
-    } else if (!users[mail] || users[mail].hash !== h) return error('Correo o contraseña incorrectos.');
-    write(SESSION, {email: mail, name: users[mail].name});
-    const cb = afterLogin; close(); render(); if (cb) cb();
+
+    $('authSubmit').disabled = true;
+
+    try {
+      if (mode === 'up') {
+        if (!name) { $('authSubmit').disabled = false; return error('Ingresa tu nombre.'); }
+        
+        // Petición de registro a Supabase con metadata del usuario
+        const { data, error: err } = await supabaseClient.auth.signUp({
+          email: mail,
+          password: pass,
+          options: { data: { full_name: name } }
+        });
+        
+        if (err) throw err;
+        currentUser = data.user;
+      } else {
+        // Petición de inicio de sesión a Supabase con contraseña
+        const { data, error: err } = await supabaseClient.auth.signInWithPassword({
+          email: mail,
+          password: pass
+        });
+        
+        if (err) throw err;
+        currentUser = data.user;
+      }
+
+      const cb = afterLogin; 
+      close(); 
+      render(); 
+      if (cb) cb();
+
+    } catch (err) {
+      error(err.message || 'Error de autenticación.');
+    } finally {
+      $('authSubmit').disabled = false;
+    }
   }
-  function logout(){ try { localStorage.removeItem(SESSION); } catch {} render(); }
-  function init(){
+
+  // 9. Cierra la sesión activa en el servidor de Supabase
+  async function logout(){
+    await supabaseClient.auth.signOut();
+    currentUser = null;
+    render();
+  }
+
+  // 10. Inicializa listeners de eventos y verifica si ya existe una sesión activa al cargar la página
+  async function init(){
     $('btnLogin').onclick = () => open();
     $('btnLogout').onclick = logout;
     $('authClose').onclick = close;
-    $('tabIn').onclick = () => setMode('in'); $('tabUp').onclick = () => setMode('up');
+    $('tabIn').onclick = () => setMode('in'); 
+    $('tabUp').onclick = () => setMode('up');
     $('authForm').addEventListener('submit', submit);
+
+    // Consulta la sesión actual persistida en la cookie/storage del SDK
+    const { data } = await supabaseClient.auth.getSession();
+    currentUser = data.session?.user || null;
     render();
+
+    // Escucha cambios de estado en tiempo real (login/logout desde otra pestaña)
+    supabaseClient.auth.onAuthStateChange((_event, session) => {
+      currentUser = session?.user || null;
+      render();
+    });
   }
+
   return {init, open, current};
 })();
 
