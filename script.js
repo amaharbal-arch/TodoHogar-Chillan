@@ -382,15 +382,26 @@ const Checkout = (() => {
     const signature = await crypto.subtle.sign('HMAC', key, enc.encode(toSign));
     return Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
-
-  async function payWithFlow(c){
+async function payWithFlow(c){
     const data = flowPayload(c);
     if (!FLOW_CONFIG.simulate) {
       data.s = await signParams(data, FLOW_CONFIG.secretKey);
-      const f = document.createElement('form');
-      f.method = 'POST'; f.action = FLOW_CONFIG.sandboxUrl;
-      Object.entries(data).forEach(([k,v]) => { const i = document.createElement('input'); i.type='hidden'; i.name=k; i.value=v; f.appendChild(i); });
-      document.body.appendChild(f); f.submit(); return;
+      
+      // Consultamos a Flow para que nos devuelva el token y la URL de redirección
+      const response = await fetch(FLOW_CONFIG.sandboxUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(data)
+      });
+      const result = await response.json();
+      
+      if (result.url && result.token) {
+        // Redirigimos al usuario a la pasarela oficial de Flow Sandbox
+        window.location.href = result.url + '?token=' + result.token;
+      } else {
+        alert('Error al conectar con Flow: ' + (result.message || 'Respuesta inválida'));
+      }
+      return;
     }
     const safe = {...data, apiKey: data.apiKey.slice(0,6) + '…'};
     openModal(`<h3>Redirigiendo a Flow (Sandbox)…</h3>
