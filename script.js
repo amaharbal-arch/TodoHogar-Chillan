@@ -3,14 +3,12 @@ const $ = id => document.getElementById(id);
 
 const FLOW_CONFIG = {
   apiKey:      '359FDDFB-986D-4813-B1DA-21L879B274A9',
-  commerceId:  '25693da24b99461c9c71ae945371889033f02861',
-  return_url:  'https://todohogar-chillan.vercel.app/', // O la URL pública de su Vercel
-  confirm_url: 'https://todohogar-chillan.vercel.app/',
+  secretKey:   '25693da24b99461c9c71ae945371889033f02861',
+  return_url:  'https://todohogarchillan.vercel.app/',
+  confirm_url: 'https://todohogarchillan.vercel.app/',
   sandboxUrl:  'https://sandbox.flow.cl/api/payment/create',
-  backendCreateUrl: null,
-  simulate: false
+  simulate:    false
 };
-
 /* =====================================================================
    ESTRUCTURA DE PRODUCTOS (3 Principales + 4 Complementarios, todos con 3D)
    ===================================================================== */
@@ -376,11 +374,21 @@ const Checkout = (() => {
              urlConfirmation: FLOW_CONFIG.confirm_url, urlReturn: FLOW_CONFIG.return_url };
   }
 
-  function payWithFlow(c){
+ async function signParams(params, secretKey) {
+    const keys = Object.keys(params).sort();
+    const toSign = keys.map(k => `${k}${params[k]}`).join('');
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey('raw', enc.encode(secretKey), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+    const signature = await crypto.subtle.sign('HMAC', key, enc.encode(toSign));
+    return Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  async function payWithFlow(c){
     const data = flowPayload(c);
     if (!FLOW_CONFIG.simulate) {
+      data.s = await signParams(data, FLOW_CONFIG.secretKey);
       const f = document.createElement('form');
-      f.method = 'POST'; f.action = FLOW_CONFIG.backendCreateUrl || FLOW_CONFIG.sandboxUrl;
+      f.method = 'POST'; f.action = FLOW_CONFIG.sandboxUrl;
       Object.entries(data).forEach(([k,v]) => { const i = document.createElement('input'); i.type='hidden'; i.name=k; i.value=v; f.appendChild(i); });
       document.body.appendChild(f); f.submit(); return;
     }
@@ -396,7 +404,6 @@ const Checkout = (() => {
       <p class="meta" style="margin:8px 0 16px">Flow no pudo procesar el pago. Tu carro sigue intacto.</p>
       <button class="btn" onclick="Checkout.close()">Volver</button></div>`);
   }
-
   function success(c, via, order){
     openModal(`<div class="ok"><span class="big">✅</span><h3>¡Pago aprobado!</h3>
       <p class="meta" style="margin:8px 0 16px">Pedido <b>${order || 'TH-' + Math.floor(100000+Math.random()*900000)}</b> · ${CLP(c.total)}<br>Vía ${via}</p>
