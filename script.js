@@ -9,6 +9,7 @@ const FLOW_CONFIG = {
   sandboxUrl:  'https://sandbox.flow.cl/api/payment/create',
   simulate:    false
 };
+
 /* =====================================================================
    ESTRUCTURA DE PRODUCTOS (3 Principales + 4 Complementarios, todos con 3D)
    ===================================================================== */
@@ -39,7 +40,7 @@ const PRODUCTS = [
     bg: '#ffffff',
     desc: 'Mueble vanitorio de madera con lavavoz empotrado y cajonera lateral. Diseño elegante para baños residenciales. Activa recargo por carga pesada.',
     specs: '<b>Dimensiones:</b> 100 x 50 x 85 cm<br><b>Material:</b> Madera noble y mármol sintético<br><b>Incluye:</b> Grifería monomando',
-    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794012647/Bathroom_vanity_3D_qewkny.glb', // Reemplazar con tu enlace GLB definitivo
+    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794012647/Bathroom_vanity_3D_qewkny.glb', 
     img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794012637/Bathroom_vanity_fdyz5p.png'
   },
   {
@@ -123,7 +124,6 @@ const COMUNAS = {
   'Coihueco':'periurbana','El Carmen':'rural','Pemuco':'rural','Yungay':'rural','Quillón':'periurbana','San Ignacio':'rural','Quirihue':'rural'
 };
 
-// 1. Inicializamos el cliente oficial de Supabase con sus credenciales exactas
 const SUPABASE_URL = 'https://jbanwtqelgjrvvvmyofu.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_g9Q1remR_r4gfNeofCNVFQ_GAoNtBvb';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -131,10 +131,8 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const Auth = (() => {
   let mode = 'in', afterLogin = null, currentUser = null;
 
-  // 2. Retorna el usuario activo en memoria para que Checkout valide la sesión
   const current = () => currentUser;
 
-  // 3. Renderiza la interfaz: muestra/oculta botones de login/logout y nombre de usuario
   function render(){
     $('btnLogin').hidden = !!currentUser; 
     $('userBox').hidden = !currentUser;
@@ -144,7 +142,6 @@ const Auth = (() => {
     }
   }
 
-  // 4. Cambia dinámicamente entre el formulario de Login ('in') y Registro ('up')
   function setMode(m){
     mode = m;
     $('tabIn').classList.toggle('on', m === 'in'); 
@@ -155,16 +152,12 @@ const Auth = (() => {
     error('');
   }
 
-  // 5. Muestra mensajes de error en pantalla si falla la autenticación
   function error(msg){ $('authErr').hidden = !msg; $('authErr').textContent = msg; }
   
-  // 6. Abre el modal de autenticación y guarda la acción pendiente tras hacer login
   function open(cb, msg){ afterLogin = cb || null; setMode('in'); $('authForm').reset(); if (msg) error(msg); $('authModal').classList.add('on'); }
   
-  // 7. Cierra el modal de autenticación
   function close(){ $('authModal').classList.remove('on'); afterLogin = null; }
 
-  // 8. Procesa el formulario enviando los datos directamente a Supabase Cloud
   async function submit(e){
     e.preventDefault();
     const mail = $('aMail').value.trim().toLowerCase();
@@ -180,7 +173,6 @@ const Auth = (() => {
       if (mode === 'up') {
         if (!name) { $('authSubmit').disabled = false; return error('Ingresa tu nombre.'); }
         
-        // Petición de registro a Supabase con metadata del usuario
         const { data, error: err } = await supabaseClient.auth.signUp({
           email: mail,
           password: pass,
@@ -190,7 +182,6 @@ const Auth = (() => {
         if (err) throw err;
         currentUser = data.user;
       } else {
-        // Petición de inicio de sesión a Supabase con contraseña
         const { data, error: err } = await supabaseClient.auth.signInWithPassword({
           email: mail,
           password: pass
@@ -212,14 +203,12 @@ const Auth = (() => {
     }
   }
 
-  // 9. Cierra la sesión activa en el servidor de Supabase
   async function logout(){
     await supabaseClient.auth.signOut();
     currentUser = null;
     render();
   }
 
-  // 10. Inicializa listeners de eventos y verifica si ya existe una sesión activa al cargar la página
   async function init(){
     $('btnLogin').onclick = () => open();
     $('btnLogout').onclick = logout;
@@ -228,12 +217,10 @@ const Auth = (() => {
     $('tabUp').onclick = () => setMode('up');
     $('authForm').addEventListener('submit', submit);
 
-    // Consulta la sesión actual persistida en la cookie/storage del SDK
     const { data } = await supabaseClient.auth.getSession();
     currentUser = data.session?.user || null;
     render();
 
-    // Escucha cambios de estado en tiempo real (login/logout desde otra pestaña)
     supabaseClient.auth.onAuthStateChange((_event, session) => {
       currentUser = session?.user || null;
       render();
@@ -316,7 +303,6 @@ const Viewer3D = (() => {
     $('mv').alt = 'Modelo 3D: ' + p.name;
     $('mvTitle').textContent = p.name;
     $('mvDesc').textContent = p.desc;
-    // Formato exacto de especificaciones solicitado
     $('mvSpecs').innerHTML = `<b>Especificaciones Técnicas:</b><br>` + (p.specs || '');
   }
   const show = id => { load(id); $('simulador').scrollIntoView({behavior:'smooth'}); };
@@ -374,7 +360,7 @@ const Checkout = (() => {
              urlConfirmation: FLOW_CONFIG.confirm_url, urlReturn: FLOW_CONFIG.return_url };
   }
 
- async function signParams(params, secretKey) {
+  async function signParams(params, secretKey) {
     const keys = Object.keys(params).sort();
     const toSign = keys.map(k => `${k}${params[k]}`).join('');
     const enc = new TextEncoder();
@@ -382,25 +368,26 @@ const Checkout = (() => {
     const signature = await crypto.subtle.sign('HMAC', key, enc.encode(toSign));
     return Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
-async function payWithFlow(c){
+
+  async function payWithFlow(c){
     const data = flowPayload(c);
     if (!FLOW_CONFIG.simulate) {
       data.s = await signParams(data, FLOW_CONFIG.secretKey);
       
-      // Consultamos a Flow para que nos devuelva el token y la URL de redirección
-      const response = await fetch(FLOW_CONFIG.sandboxUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(data)
-      });
-      const result = await response.json();
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = FLOW_CONFIG.sandboxUrl;
       
-      if (result.url && result.token) {
-        // Redirigimos al usuario a la pasarela oficial de Flow Sandbox
-        window.location.href = result.url + '?token=' + result.token;
-      } else {
-        alert('Error al conectar con Flow: ' + (result.message || 'Respuesta inválida'));
-      }
+      Object.entries(data).forEach(([key, val]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = val;
+        form.appendChild(input);
+      });
+      
+      document.body.appendChild(form);
+      form.submit();
       return;
     }
     const safe = {...data, apiKey: data.apiKey.slice(0,6) + '…'};
@@ -415,6 +402,7 @@ async function payWithFlow(c){
       <p class="meta" style="margin:8px 0 16px">Flow no pudo procesar el pago. Tu carro sigue intacto.</p>
       <button class="btn" onclick="Checkout.close()">Volver</button></div>`);
   }
+
   function success(c, via, order){
     openModal(`<div class="ok"><span class="big">✅</span><h3>¡Pago aprobado!</h3>
       <p class="meta" style="margin:8px 0 16px">Pedido <b>${order || 'TH-' + Math.floor(100000+Math.random()*900000)}</b> · ${CLP(c.total)}<br>Vía ${via}</p>
