@@ -2,8 +2,8 @@ const crypto = require('crypto');
 
 export default async function handler(req, res) {
   // Permitir solo peticiones POST desde su frontend
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Método no permitido' });
+  if (req.method === 'POST' && !req.body?.amount) {
+    return res.redirect(303, 'https://todohogarchillan.vercel.app/?status=success');
   }
 
   try {
