@@ -106,6 +106,7 @@ const PRODUCTS = [
     price: 24990, 
     pesoKg: 4, 
     inst: 0, 
+    emoji: '📦', 
     bg: '#ffffff',
     desc: 'Maleta organizadora reforzada con cierres metálicos y bandeja interior para herramientas de mano y accesorios.',
     specs: '<b>Material:</b> Polímero industrial reforzado<br><b>Capacidad:</b> 22 pulgadas<br><b>Seguridad:</b> Cierres metálicos antideslizantes',
@@ -374,22 +375,32 @@ const Checkout = (() => {
     if (!FLOW_CONFIG.simulate) {
       data.s = await signParams(data, FLOW_CONFIG.secretKey);
       
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = FLOW_CONFIG.sandboxUrl;
-      
-      Object.entries(data).forEach(([key, val]) => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = val;
-        form.appendChild(input);
-      });
-      
-      document.body.appendChild(form);
-      form.submit();
+      openModal('<p class="ok"><span class="big">🔄</span><br>Conectando con la pasarela de Flow...</p>');
+
+      try {
+        const response = await fetch(FLOW_CONFIG.sandboxUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(data)
+        });
+        const result = await response.json();
+        
+        if (result.url && result.token) {
+          // Redirección limpia a la pasarela oficial con el token obtenido
+          window.location.href = result.url + '?token=' + result.token;
+        } else {
+          openModal(`<div class="ok"><span class="big">❌</span><h3>Error de conexión</h3>
+            <p class="meta" style="margin:8px 0 16px">${result.message || 'No se pudo obtener el token de pago.'}</p>
+            <button class="btn" onclick="Checkout.close()">Volver</button></div>`);
+        }
+      } catch (err) {
+        openModal(`<div class="ok"><span class="big">❌</span><h3>Error de red o CORS</h3>
+          <p class="meta" style="margin:8px 0 16px">Verifica tu conexión o los permisos de red.</p>
+          <button class="btn" onclick="Checkout.close()">Volver</button></div>`);
+      }
       return;
     }
+
     const safe = {...data, apiKey: data.apiKey.slice(0,6) + '…'};
     openModal(`<h3>Redirigiendo a Flow (Sandbox)…</h3>
       <p class="meta">Simulación: no se contacta a Flow. Esto es lo que se enviaría a <code>${FLOW_CONFIG.sandboxUrl}</code>:</p>
