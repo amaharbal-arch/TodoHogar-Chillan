@@ -370,36 +370,41 @@ const Checkout = (() => {
     return Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
-  async function payWithFlow(c){
+ async function payWithFlow(c){
     const data = flowPayload(c);
     if (!FLOW_CONFIG.simulate) {
-      data.s = await signParams(data, FLOW_CONFIG.secretKey);
-      
-      openModal('<p class="ok"><span class="big">🔄</span><br>Conectando con la pasarela de Flow...</p>');
+      openModal('<p class="ok"><span class="big">🔄</span><br>Conectando con el servidor seguro...</p>');
 
       try {
-        const response = await fetch(FLOW_CONFIG.sandboxUrl, {
+        // Llamamos a nuestra propia Serverless Function en Vercel (/api/flow)
+        const response = await fetch('/api/flow', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams(data)
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
         });
         const result = await response.json();
         
         if (result.url && result.token) {
-          // Redirección limpia a la pasarela oficial con el token obtenido
+          // Redirección limpia a la pasarela oficial de Flow Sandbox
           window.location.href = result.url + '?token=' + result.token;
         } else {
-          openModal(`<div class="ok"><span class="big">❌</span><h3>Error de conexión</h3>
-            <p class="meta" style="margin:8px 0 16px">${result.message || 'No se pudo obtener el token de pago.'}</p>
+          openModal(`<div class="ok"><span class="big">❌</span><h3>Error de Flow</h3>
+            <p class="meta" style="margin:8px 0 16px">${result.message || 'Respuesta inválida del servidor.'}</p>
             <button class="btn" onclick="Checkout.close()">Volver</button></div>`);
         }
       } catch (err) {
-        openModal(`<div class="ok"><span class="big">❌</span><h3>Error de red o CORS</h3>
-          <p class="meta" style="margin:8px 0 16px">Verifica tu conexión o los permisos de red.</p>
+        openModal(`<div class="ok"><span class="big">❌</span><h3>Error de conexión</h3>
+          <p class="meta" style="margin:8px 0 16px">No se pudo comunicar con el servidor de pagos.</p>
           <button class="btn" onclick="Checkout.close()">Volver</button></div>`);
       }
       return;
     }
+    
+    // Si estuviera en modo simulación
+    const safe = {...data, apiKey: data.apiKey.slice(0,6) + '…'};
+    openModal(`<h3>Redirigiendo a Flow (Sandbox)…</h3>
+      <p class="meta">Simulación activada.</p>`);
+  }
 
     const safe = {...data, apiKey: data.apiKey.slice(0,6) + '…'};
     openModal(`<h3>Redirigiendo a Flow (Sandbox)…</h3>
