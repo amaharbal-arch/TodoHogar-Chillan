@@ -218,6 +218,10 @@ const Auth = (() => {
     $('tabUp').onclick = () => setMode('up');
     $('authForm').addEventListener('submit', submit);
 
+    $('btnGoogle').onclick = async () => {
+      await supabaseClient.auth.signInWithOAuth({ provider: 'google' });
+    };
+
     const { data } = await supabaseClient.auth.getSession();
     currentUser = data.session?.user || null;
     render();
