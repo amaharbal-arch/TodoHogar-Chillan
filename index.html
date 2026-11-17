@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Todohogar Chillán | Hogar y mejoramiento</title>
+<!-- SDK Supabase -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- RÚBRICA · Visualización 3D: <model-viewer> de Google vía CDN -->
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 <!-- Llamado al archivo de estilos CSS -->
@@ -14,7 +16,7 @@
 <nav>
   <div class="wrap">
     <a class="logo" href="#top">
-         <img src="https://res.cloudinary.com/deqk2tmer/image/upload/v1794945246/logo_gqfpar.jpg" alt="Todohogar Chillán">
+      <img src="https://res.cloudinary.com/deqk2tmer/image/upload/v1794945246/logo_gqfpar.jpg" alt="Todohogar Chillán">
     </a>
     <input class="search" id="q" type="search" placeholder="Buscar productos…">
     <a class="l" href="#catalogo">Catálogo</a>
@@ -82,9 +84,9 @@
     <div class="panel">
       <h3>Reglas de despacho</h3>
       <p class="meta">• Despacho base según zona (urbana, periurbana o rural).<br>
-      • Se aplica <b>recargo por carga pesada</b> si algún producto del carro supera 30 kg.<br>
-      • La instalación se cobra por producto instalable y varía según la zona.<br>
-      • Los valores son simulados para este prototipo.</p>
+- Se aplica <b>recargo por carga pesada</b> si algún producto del carro supera 30 kg.<br>
+- La instalación se cobra por producto instalable y varía según la zona.<br>
+- Los valores son simulados para este prototipo.</p>
     </div>
   </div>
 </div></section>
@@ -121,7 +123,7 @@
     <div class="note err" id="authErr" hidden></div>
     <button class="btn" id="authSubmit" style="width:100%;margin-top:6px">Ingresar</button>
   </form>
-  <p class="meta" style="margin-top:10px">Sesión simulada: los datos se guardan solo en este navegador (localStorage).</p>
+  <p class="meta" style="margin-top:10px">Autenticación respaldada por Supabase Cloud.</p>
 </div></div>
 
 <!-- MODAL DE PAGO -->
