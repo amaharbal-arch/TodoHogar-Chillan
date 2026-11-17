@@ -80,28 +80,26 @@ const PRODUCTS = [
     price: 19990, 
     pesoKg: 2, 
     inst: 12000, 
-    emoji: '💡',
     bg: '#ffffff',
     desc: 'Lámpara de muro decorativa con base de bronce envejecido y pantalla de vidrio opal con relieve.',
     specs: '<b>Socket:</b> E27 (compatible LED)<br><b>Material:</b> Aleación metálica y vidrio texturizado<br><b>Uso:</b> Interior / Exterior techado',
     glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013036/victorian_wall_lamp_cxmzct.glb', 
     img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013028/lampara_oigotu.png'
   },
-  {
+ {
     id: 'vanitorio_ceramica', 
     name: 'Vanitorio Compacto con Loza Blanca', 
     cat: 'Mejoramiento', 
     price: 89990, 
     pesoKg: 24, 
     inst: 18000, 
-    emoji: '🚰',
     bg: '#ffffff',
     desc: 'Mueble de piso con patas cromadas y lavamanos de loza incorporado, optimizado para espacios modernos.',
     specs: '<b>Dimensiones:</b> 60 x 45 x 80 cm<br><b>Material:</b> Melamina antihumedad y loza<br><b>Uso:</b> Baños principales o de visitas',
     glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013140/sink_with_faucet_g7qbu5.glb', 
     img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013137/lavamano_qfe0yz.png'
   },
-  {
+ {
     id: 'caja_herramientas', 
     name: 'Caja de Herramientas Modular de Alto Impacto', 
     cat: 'Herramientas', 
@@ -114,7 +112,7 @@ const PRODUCTS = [
     specs: '<b>Material:</b> Polímero industrial reforzado<br><b>Capacidad:</b> 22 pulgadas<br><b>Seguridad:</b> Cierres metálicos antideslizantes',
     glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013242/toolbox_dpoevg.glb', 
     img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013238/caja_de_herramientas_gjlplh.png'
-  }
+  },
 ];
 
 const ZONES = {
@@ -129,7 +127,7 @@ const COMUNAS = {
 
 const SUPABASE_URL = 'https://jbanwtqelgjrvvvmyofu.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_g9Q1remR_r4gfNeofCNVFQ_GAoNtBvb';
-const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const Auth = (() => {
   let mode = 'in', afterLogin = null, currentUser = null;
@@ -163,7 +161,6 @@ const Auth = (() => {
 
   async function submit(e){
     e.preventDefault();
-    if (!supabaseClient) return error('Error al conectar con Supabase.');
     const mail = $('aMail').value.trim().toLowerCase();
     const pass = $('aPass').value;
     const name = $('aName').value.trim();
@@ -208,7 +205,7 @@ const Auth = (() => {
   }
 
   async function logout(){
-    if (supabaseClient) await supabaseClient.auth.signOut();
+    await supabaseClient.auth.signOut();
     currentUser = null;
     render();
   }
@@ -221,7 +218,10 @@ const Auth = (() => {
     $('tabUp').onclick = () => setMode('up');
     $('authForm').addEventListener('submit', submit);
 
-    if (!supabaseClient) return;
+    $('btnGoogle').onclick = async () => {
+      await supabaseClient.auth.signInWithOAuth({ provider: 'google' });
+    };
+
     const { data } = await supabaseClient.auth.getSession();
     currentUser = data.session?.user || null;
     render();
@@ -365,18 +365,31 @@ const Checkout = (() => {
              urlConfirmation: FLOW_CONFIG.confirm_url, urlReturn: FLOW_CONFIG.return_url };
   }
 
-  async function payWithFlow(c){
+  async function signParams(params, secretKey) {
+    const keys = Object.keys(params).sort();
+    const toSign = keys.map(k => `${k}${params[k]}`).join('');
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey('raw', enc.encode(secretKey), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+    const signature = await crypto.subtle.sign('HMAC', key, enc.encode(toSign));
+    return Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+ async function payWithFlow(c){
     const data = flowPayload(c);
     if (!FLOW_CONFIG.simulate) {
       openModal('<p class="ok"><span class="big">🔄</span><br>Conectando con el servidor seguro...</p>');
+
       try {
+        // Llamamos a nuestra propia Serverless Function en Vercel (/api/flow)
         const response = await fetch('/api/flow', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data)
         });
         const result = await response.json();
+        
         if (result.url && result.token) {
+          // Redirección limpia a la pasarela oficial de Flow Sandbox
           window.location.href = result.url + '?token=' + result.token;
         } else {
           openModal(`<div class="ok"><span class="big">❌</span><h3>Error de Flow</h3>
@@ -390,6 +403,8 @@ const Checkout = (() => {
       }
       return;
     }
+    
+
 
     const safe = {...data, apiKey: data.apiKey.slice(0,6) + '…'};
     openModal(`<h3>Redirigiendo a Flow (Sandbox)…</h3>
