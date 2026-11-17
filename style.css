@@ -71,10 +71,19 @@ nav .wrap {
 }
 
 .logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-weight: 800;
   font-size: 1.2rem;
   color: var(--g9);
   text-decoration: none;
+}
+
+.logo img {
+  height: 130px;
+  width: auto;
+  object-fit: contain;
 }
 
 .logo b {
@@ -508,3 +517,23 @@ pre.code {
 }
 
 .ok {
+  text-align: center;
+}
+
+.ok .big {
+  font-size: 3rem;
+}
+
+footer {
+  background: var(--g9);
+  color: #9aa5b1;
+  padding: 24px 0;
+  font-size: .85rem;
+  text-align: center;
+}
+
+@media(max-width:800px) {
+  .v3d, .two {
+    grid-template-columns: 1fr;
+  }
+}
