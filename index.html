@@ -6,8 +6,6 @@
 <title>Todohogar Chillán | Hogar y mejoramiento</title>
 <!-- RÚBRICA · Visualización 3D: <model-viewer> de Google vía CDN -->
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
-  <!-- AQUI DEBE INSERTAR EXACTAMENTE LA LIBRERIA DE SUPABASE -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- Llamado al archivo de estilos CSS -->
 <link rel="stylesheet" href="style.css">
 </head>
@@ -15,7 +13,9 @@
 
 <nav>
   <div class="wrap">
-    <a class="logo" href="#top">Todo<b>hogar</b> Chillán</a>
+    <a class="logo" href="#top">
+         <img src="https://res.cloudinary.com/deqk2tmer/image/upload/v1794945246/logo_gqfpar.jpg" alt="Todohogar Chillán">
+    </a>
     <input class="search" id="q" type="search" placeholder="Buscar productos…">
     <a class="l" href="#catalogo">Catálogo</a>
     <a class="l" href="#simulador">Simulador 3D</a>
@@ -119,15 +119,9 @@
     <input class="fld" id="aMail" type="email" placeholder="Correo electrónico" autocomplete="email">
     <input class="fld" id="aPass" type="password" placeholder="Contraseña (mín. 6 caracteres)" autocomplete="current-password">
     <div class="note err" id="authErr" hidden></div>
-    <div style="text-align: center; margin-top: 10px; margin-bottom: 15px;">o</div>
-    <button type="button" class="btn o" id="btnGoogle" style="width:100%; margin-bottom:12px; display:flex; align-items:center; justify-content:center; gap:8px;">
-    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width:18px; height:18px;">
-         Continuar con Google
-    </button>
-    <div></div>
-    <button class="btn" id="authSubmit" style="width:100%;margin-top:15px">Ingresar</button>
+    <button class="btn" id="authSubmit" style="width:100%;margin-top:6px">Ingresar</button>
   </form>
-  <p class="meta" style="margin-top:10px"></p>
+  <p class="meta" style="margin-top:10px">Sesión simulada: los datos se guardan solo en este navegador (localStorage).</p>
 </div></div>
 
 <!-- MODAL DE PAGO -->
