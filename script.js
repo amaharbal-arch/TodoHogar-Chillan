@@ -254,8 +254,11 @@ const Cart = (() => {
     const c = calc();
     $('cnt').textContent = Object.values(items).reduce((a,b) => a+b, 0);
     $('items').innerHTML = c.list.length ? c.list.map(i => `
-      <div class="item"><span>${i.p.emoji}</span><span class="n">${i.p.name}<br><b>${CLP(i.p.price*i.q)}</b></span>
-      <span class="qty"><button onclick="Cart.chg('${i.p.id}',-1)">−</button> ${i.q} <button onclick="Cart.chg('${i.p.id}',1)">+</button></span></div>`).join('')
+      <div class="item">
+        <img class="item-thumb" src="${i.p.img}" alt="${i.p.name}">
+        <span class="n">${i.p.name}<br><b>${CLP(i.p.price*i.q)}</b></span>
+        <span class="qty"><button onclick="Cart.chg('${i.p.id}',-1)">−</button> ${i.q} <button onclick="Cart.chg('${i.p.id}',1)">+</button></span>
+      </div>`).join('')
       : '<p class="empty">Tu carro está vacío. Agrega un producto del catálogo.</p>';
     $('sSub').textContent = CLP(c.sub); $('sDesp').textContent = CLP(c.desp);
     $('sRec').textContent = CLP(c.rec); $('sInst').textContent = CLP(c.inst); $('sTot').textContent = CLP(c.total);
@@ -374,13 +377,12 @@ const Checkout = (() => {
     return Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
- async function payWithFlow(c){
+  async function payWithFlow(c){
     const data = flowPayload(c);
     if (!FLOW_CONFIG.simulate) {
       openModal('<p class="ok"><span class="big">🔄</span><br>Conectando con el servidor seguro...</p>');
 
       try {
-        // Llamamos a nuestra propia Serverless Function en Vercel (/api/flow)
         const response = await fetch('/api/flow', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -389,43 +391,30 @@ const Checkout = (() => {
         const result = await response.json();
         
         if (result.url && result.token) {
-          // Redirección limpia a la pasarela oficial de Flow Sandbox
           window.location.href = result.url + '?token=' + result.token;
         } else {
-          openModal(`<div class="ok"><span class="big">❌</span><h3>Error de Flow</h3>
-            <p class="meta" style="margin:8px 0 16px">${result.message || 'Respuesta inválida del servidor.'}</p>
-            <button class="btn" onclick="Checkout.close()">Volver</button></div>`);
+          openModal(`<div class="ok"><span class="big">❌</span><h3>Error de Flow</h3><p class="meta" style="margin:8px 0 16px">${result.message || 'Respuesta inválida del servidor'}</p><button class="btn" onclick="Checkout.start()">Volver a intentar</button></div>`);
         }
       } catch (err) {
-        openModal(`<div class="ok"><span class="big">❌</span><h3>Error de conexión</h3>
-          <p class="meta" style="margin:8px 0 16px">No se pudo comunicar con el servidor de pagos.</p>
-          <button class="btn" onclick="Checkout.close()">Volver</button></div>`);
+        openModal(`<div class="ok"><span class="big">❌</span><h3>Error de Conexión</h3><p class="meta" style="margin:8px 0 16px">${err.message}</p><button class="btn" onclick="Checkout.start()">Volver a intentar</button></div>`);
       }
-      return;
     }
-    
-
-
-    const safe = {...data, apiKey: data.apiKey.slice(0,6) + '…'};
-    openModal(`<h3>Redirigiendo a Flow (Sandbox)…</h3>
-      <p class="meta">Simulación: no se contacta a Flow. Esto es lo que se enviaría a <code>${FLOW_CONFIG.sandboxUrl}</code>:</p>
-      <pre class="code">${JSON.stringify(safe, null, 2)}</pre>
-      <p class="meta">Simula la respuesta que Flow enviaría a tu <code>return_url</code>:</p>
-      <div class="row" style="margin-top:10px"><button class="btn" style="flex:1;background:var(--grn)" id="fOk">✔ Pago exitoso</button>
-      <button class="btn" style="flex:1;background:var(--red)" id="fKo">✖ Pago rechazado</button></div>`);
-    $('fOk').onclick = () => success(c, 'Flow (sandbox)', data.commerceOrder);
-    $('fKo').onclick = () => openModal(`<div class="ok"><span class="big">❌</span><h3>Pago rechazado</h3>
-      <p class="meta" style="margin:8px 0 16px">Flow no pudo procesar el pago. Tu carro sigue intacto.</p>
-      <button class="btn" onclick="Checkout.close()">Volver</button></div>`);
   }
 
-  function success(c, via, order){
-    openModal(`<div class="ok"><span class="big">✅</span><h3>¡Pago aprobado!</h3>
-      <p class="meta" style="margin:8px 0 16px">Pedido <b>${order || 'TH-' + Math.floor(100000+Math.random()*900000)}</b> · ${CLP(c.total)}<br>Vía ${via}</p>
-      <button class="btn" onclick="Checkout.close()">Volver a la tienda</button></div>`);
-    Cart.clear();
+  function success(c, method){
+    openModal(`<div class="ok"><span class="big">✅</span><h3 style="margin:10px 0">¡Compra Exitosa!</h3>
+      <p class="meta">Método: <b>${method}</b> · Total pagado: <b>${CLP(c.total)}</b></p>
+      <p class="meta" style="margin:8px 0 16px">Se ha registrado tu despacho a <b>${$('comuna').value}</b>${$('inst').checked?' con instalación domiciliaria':''}.</p>
+      <button class="btn" onclick="Cart.clear(); Checkout.close()">Aceptar y finalizar</button></div>`);
   }
-  return {init: () => { $('pay').onclick = start; }, close};
+
+  return {start, close};
 })();
 
-Auth.init(); Catalog.init(); Cart.init(); Viewer3D.init(); Checkout.init();
+document.addEventListener('DOMContentLoaded', () => {
+  Auth.init();
+  Cart.init();
+  Catalog.init();
+  Viewer3D.init();
+  $('pay').onclick = Checkout.start;
+});
