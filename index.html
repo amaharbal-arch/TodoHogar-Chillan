@@ -1,14 +1,11 @@
-<!DOCTYPE html>
+      <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Todohogar Chillán | Hogar y mejoramiento</title>
-<!-- RÚBRICA · Visualización 3D: <model-viewer> de Google vía CDN -->
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
-  <!-- AQUI DEBE INSERTAR EXACTAMENTE LA LIBRERIA DE SUPABASE -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<!-- Llamado al archivo de estilos CSS -->
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -38,76 +35,83 @@
   </div>
 </header>
 
-<section id="catalogo"><div class="wrap">
-  <h2>Catálogo</h2>
-  <p class="sub">Hogar y mejoramiento · productos voluminosos y complementarios</p>
-  
-  <h3 class="grp" id="grpMain">Productos principales · Destacados con Visor 3D</h3>
-  <div class="grid" id="gridMain"></div>
-  
-  <h3 class="grp" id="grpExtra">Productos complementarios · Con Visor 3D</h3>
-  <div class="grid" id="gridExtra"></div>
-  
-  <p class="empty" id="noRes" hidden>No se encontraron productos.</p>
-</div></section>
+<!-- ESTRUCTURA PRINCIPAL + PANEL LATERAL FLOTANTE -->
+<div class="wrap shop-layout">
+  <main class="shop-main">
+    <section id="catalogo">
+      <h2>Catálogo</h2>
+      <p class="sub">Hogar y mejoramiento · productos voluminosos y complementarios</p>
+      
+      <h3 class="grp" id="grpMain">Productos principales · Destacados con Visor 3D</h3>
+      <div class="grid" id="gridMain"></div>
+      
+      <h3 class="grp" id="grpExtra">Productos complementarios · Con Visor 3D</h3>
+      <div class="grid" id="gridExtra"></div>
+      
+      <p class="empty" id="noRes" hidden>No se encontraron productos.</p>
+    </section>
 
-<!-- SIMULADOR 3D -->
-<section id="simulador" style="background:#fff"><div class="wrap">
-  <h2>Simulador 3D</h2>
-  <p class="sub">Gira con el mouse o el dedo, acerca con la rueda / pellizco.</p>
-  <div class="v3d">
-    <model-viewer id="mv" alt="Modelo 3D del producto" camera-controls auto-rotate
-      shadow-intensity="1" ar ar-modes="webxr scene-viewer quick-look">
-      <div slot="poster" style="display:grid;place-items:center;height:100%">Cargando modelo 3D…</div>
-    </model-viewer>
-    <div class="panel">
-      <h3 id="mvTitle"></h3>
-      <p class="meta" id="mvDesc" style="margin-bottom:8px;"></p>
-      <div class="specs-box" id="mvSpecs"></div>
-      <button class="btn" id="mvAdd" style="width:100%">Agregar este producto al carro</button>
-    </div>
-  </div>
-</div></section>
+    <section id="simulador" style="background:#fff; padding: 32px; border-radius: 12px; border: 1px solid var(--g2); margin-bottom: 32px;">
+      <h2>Simulador 3D</h2>
+      <p class="sub">Gira con el mouse o el dedo, acerca con la rueda / pellizco.</p>
+      <div class="v3d">
+        <model-viewer id="mv" alt="Modelo 3D del producto" camera-controls auto-rotate
+          shadow-intensity="1" ar ar-modes="webxr scene-viewer quick-look">
+          <div slot="poster" style="display:grid;place-items:center;height:100%">Cargando modelo 3D…</div>
+        </model-viewer>
+        <div class="panel">
+          <h3 id="mvTitle"></h3>
+          <p class="meta" id="mvDesc" style="margin-bottom:8px;"></p>
+          <div class="specs-box" id="mvSpecs"></div>
+          <button class="btn" id="mvAdd" style="width:100%">Agregar este producto al carro</button>
+        </div>
+      </div>
+    </section>
 
-<section id="logistica"><div class="wrap">
-  <h2>Logística e Instalación</h2>
-  <p class="sub">Valida el despacho de carga pesada para tu comuna.</p>
-  <div class="two">
-    <div class="panel">
-      <h3>Tu comuna en Ñuble</h3>
-      <label for="comuna">Comuna de despacho</label>
-      <select id="comuna"></select>
-      <div class="note" id="zoneInfo"></div>
-      <label class="chk"><input type="checkbox" id="inst">
-        <span>Servicio de Instalación Domiciliaria Certificada<br><small class="meta" id="instInfo"></small></span></label>
-    </div>
-    <div class="panel">
-      <h3>Reglas de despacho</h3>
-      <p class="meta">• Despacho base según zona (urbana, periurbana o rural).<br>
-      • Se aplica <b>recargo por carga pesada</b> si algún producto del carro supera 30 kg.<br>
-      • La instalación se cobra por producto instalable y varía según la zona.<br>
-      • Los valores son simulados para este prototipo.</p>
-    </div>
-  </div>
-</div></section>
+    <section id="logistica">
+      <h2>Logística e Instalación</h2>
+      <p class="sub">Valida el despacho de carga pesada para tu comuna.</p>
+      <div class="two">
+        <div class="panel">
+          <h3>Tu comuna en Ñuble</h3>
+          <label for="comuna">Comuna de despacho</label>
+          <select id="comuna"></select>
+          <div class="note" id="zoneInfo"></div>
+          <label class="chk"><input type="checkbox" id="inst">
+            <span>Servicio de Instalación Domiciliaria Certificada<br><small class="meta" id="instInfo"></small></span></label>
+        </div>
+        <div class="panel">
+          <h3>Reglas de despacho</h3>
+          <p class="meta">• Despacho base según zona (urbana, periurbana o rural).<br>
+    - Se aplica <b>recargo por carga pesada</b> si algún producto del carro supera 30 kg.<br>
+    - La instalación se cobra por producto instalable y varía según la zona.<br>
+    - Los valores son simulados para este prototipo.</p>
+        </div>
+      </div>
+    </section>
+  </main>
 
-<section id="resumen" style="background:#fff"><div class="wrap">
-  <h2>Resumen de compra</h2>
-  <p class="sub">Subtotal + despacho + instalación, en pesos chilenos.</p>
-  <div class="two">
-    <div class="panel"><h3>Tu carro</h3><div id="items"></div></div>
-    <div class="panel">
-      <h3>Total a pagar</h3>
-      <div class="line"><span>Subtotal productos</span><span id="sSub">$0</span></div>
-      <div class="line"><span>Despacho base</span><span id="sDesp">$0</span></div>
-      <div class="line"><span>Recargo carga pesada</span><span id="sRec">$0</span></div>
-      <div class="line"><span>Instalación certificada</span><span id="sInst">$0</span></div>
-      <div class="line t"><span>Total</span><span id="sTot">$0</span></div>
+  <!-- PANEL LATERAL DERECHO: RESUMEN Y COMPRA DIRECTA -->
+  <aside class="shop-aside" id="resumen">
+    <div class="panel sticky-cart">
+      <h3>Resumen de compra</h3>
+      <p class="meta" style="margin-bottom: 12px;">Tu carro en tiempo real</p>
+      
+      <div id="items" class="cart-scroll"></div>
+      
+      <div style="margin-top: 14px; border-top: 1px solid var(--g2); padding-top: 10px;">
+        <div class="line"><span>Subtotal</span><span id="sSub">$0</span></div>
+        <div class="line"><span>Despacho base</span><span id="sDesp">$0</span></div>
+        <div class="line"><span>Recargo pesada</span><span id="sRec">$0</span></div>
+        <div class="line"><span>Instalación</span><span id="sInst">$0</span></div>
+        <div class="line t"><span>Total</span><span id="sTot">$0</span></div>
+      </div>
+
       <div class="note err" id="payErr" hidden></div>
-      <button class="btn" id="pay" style="width:100%;margin-top:14px">Ir a pagar</button>
+      <button class="btn" id="pay" style="width:100%; margin-top:14px; font-size:1.05rem;">Comprar ahora</button>
     </div>
-  </div>
-</div></section>
+  </aside>
+</div>
 
 <footer>© 2026 Todohogar Chillán · Prototipo para la EVA 3 e-commerce</footer>
 
@@ -126,16 +130,13 @@
     <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style="width:18px; height:18px;">
          Continuar con Google
     </button>
-    <div></div>
     <button class="btn" id="authSubmit" style="width:100%;margin-top:15px">Ingresar</button>
   </form>
-  <p class="meta" style="margin-top:10px"></p>
 </div></div>
 
 <!-- MODAL DE PAGO -->
 <div class="modal" id="payModal"><div class="mbox" id="payBox"></div></div>
 
-<!-- Llamado al archivo de script JavaScript -->
 <script src="script.js"></script>
 </body>
 </html>
