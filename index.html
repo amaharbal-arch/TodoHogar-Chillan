@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TodoHogarChillán splash</title>
+  <style>
+    :root {
+      --duration: 6s; /* Antes 5s: hace que la pelota y su recorrido avancen más pausados */
+      --wave-duration: calc(var(--duration) * 0.25);
+      --text-in-delay: calc(var(--duration) * 0.275);
+      --text-in-duration: calc(var(--duration) * 0.1);
+      --easing: cubic-bezier(0.5, 0, 0.5, 1);
+      --dot-color: #ffd950;
+      --dot-color-dark: #977a12;
+      --background: #060506;
+    }
+
+    *,
+    *:before,
+    *:after {
+      box-sizing: border-box;
+      position: relative;
+    }
+
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      background: var(--background);
+      color: white;
+      font-family: Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(3.5rem, 14vh, 8rem);
+      width: 100%;
+    }
+
+    .logo {
+      display: block;
+      width: min(72vw, 1000px);
+      max-height: 40vh;
+      object-fit: contain;
+      transform: translateY(-8vh);
+      animation: logo-in 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes logo-in {
+      0% {
+        opacity: 0;
+        transform: translateY(calc(-8vh + 2.5vh));
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(-8vh);
+      }
+    }
+
+    .stage {
+      display: grid;
+      align-items: center;
+      justify-items: center;
+      width: 100%;
+      min-height: 1.5em;
+      transform: translateY(-12vh);
+    }
+
+    .stage > * {
+      grid-area: 1 / 1;
+    }
+
+    .title {
+      font-size: clamp(1.4rem, 7vw, 4.5rem);
+      margin: 0;
+      white-space: nowrap;
+    }
+
+    .title .char {
+      display: inline-block;
+      --delay: calc(var(--text-in-delay) + (0.25s * (1 - var(--distance-percent))));
+      animation: text-in var(--text-in-duration) var(--easing) var(--delay) backwards;
+      transform-origin: center 1em;
+    }
+
+    @keyframes text-in {
+      0% {
+        opacity: 0;
+        transform: translateX(calc(-0.4em * var(--char-offset))) scale(0);
+      }
+      90% {
+        transform: translateX(0em) scale(1.1);
+      }
+    }
+
+    .title .char[data-char="t"],
+    .title .char[data-char="i"] {
+      visibility: hidden;
+      --squish-scale: 0.6;
+      --squish-y: 10%;
+    }
+
+    .title .char[data-char="t"]:before,
+    .title .char[data-char="i"]:before {
+      animation: text-squish var(--duration) var(--easing) forwards;
+      visibility: visible;
+      transform-origin: center 1em;
+      content: attr(data-char);
+      position: absolute;
+    }
+
+    .title .char[data-char="i"] {
+      --squish-scale: 0.9;
+      --squish-y: 5%;
+    }
+
+    @keyframes text-squish {
+      47.5%,
+      52.5% {
+        transform: none;
+      }
+      50% {
+        transform: translateY(calc(var(--squish-y) * 1))
+          scaleY(calc(var(--squish-scale) * 1));
+      }
+    }
+
+    .title .char:last-child {
+      animation: text-in var(--text-in-duration) var(--easing) var(--delay) backwards,
+                 text-bonk var(--duration) var(--easing) forwards;
+    }
+
+    @keyframes text-bonk {
+      80%,
+      85%,
+      to {
+        transform: none;
+      }
+      82% {
+        transform: translateX(-20%);
+      }
+    }
+
+    .dot {
+      font-size: 5vmin;
+      width: 1em;
+      height: 1em;
+      animation:
+        dot var(--duration) var(--easing) both,
+        dot-travel var(--duration) linear both;
+    }
+
+   @keyframes dot-travel {
+  0%,
+  36% {
+    left: 0px;
+  }
+  42% {
+    left: var(--travel-start);
+  }
+  94%,
+  to {
+    left: var(--travel-end);
+  }
+ }
+
+    .dot-inner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      display: grid;
+      align-items: center;
+      justify-items: center;
+    }
+
+    .dot-inner > * {
+      grid-area: 1 / 1;
+    }
+
+    .dot-wave {
+      width: 200%;
+      height: 200%;
+      fill: var(--dot-color);
+      animation: wave-in var(--wave-duration) var(--easing);
+      --offset-x: -110%;
+    }
+
+    @keyframes wave-in {
+      0% {
+        transform: translateY(100%) translateX(var(--offset-x));
+      }
+      70% {
+        transform: translateY(30%) translateX(0%);
+      }
+    }
+
+    .dot-wave.background {
+      fill: var(--dot-color-dark);
+      animation-duration: calc(0.95 * var(--wave-duration));
+      --offset-x: 110%;
+    }
+
+    @keyframes dot {
+  from {
+    opacity: 0;
+    transform: scale(3);
+  }
+  12% {
+    opacity: 1;
+    transform: scale(3);
+  }
+  18% {
+    transform: scale(3) translateY(0.5em) scaleY(1.5);
+  }
+  24% {
+    transform: scale(1) translateY(-300%);
+  }
+  34% {
+    transform: translateY(1em) scaleY(0.5);
+  }
+  44% {
+    transform: translateY(-400%);
+  }
+  54% {
+    transform: translateY(-1em);
+  }
+  58% {
+    transform: translateY(-300%);
+  }
+  62% {
+    transform: translateY(-1em);
+  }
+  66% {
+    transform: translateY(-200%);
+  }
+  70% {
+    transform: translateY(1em);
+  }
+  85%,
+  94%,
+  to {
+    transform: translateY(1em);
+  }
+}
+
+    @media (max-width: 480px) {
+      .title {
+        font-size: clamp(1.25rem, 6.8vw, 2rem);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img
+      class="logo"
+      src="https://res.cloudinary.com/deqk2tmer/image/upload/v1795048839/logo_splash_yhyuhs.png"
+      alt="TodoHogar Chillán"
+    >
+
+    <div class="stage">
+      <h1 class="title" data-splitting>todohogarchillan.cl</h1>
+
+      <div class="dot" aria-hidden="true">
+        <div class="dot-inner">
+          <svg class="dot-wave background" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+            <path d="M799.09 90s11.04 0 0 0c-80.714 0-79.621-90-200-90-120.377 0-118.607 90-200 90-81.391 0-81.215-90-200-90C80.308 0 78.68 89.29-.91 90c-6.946.062 0 0 0 0v510h800V90z" />
+          </svg>
+          <svg class="dot-wave foreground" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+            <path d="M799.09 90s11.04 0 0 0c-80.714 0-79.621-90-200-90-120.377 0-118.607 90-200 90-81.391 0-81.215-90-200-90C80.308 0 78.68 89.29-.91 90c-6.946.062 0 0 0 0v510h800V90z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const TARGET_URL = "tienda.html";
+
+    // Si ya se vio en esta pestaña/sesión, salta directo
+    if (sessionStorage.getItem("splash_visto") === "true") {
+      window.location.replace(TARGET_URL);
+    }
+
+    const title = document.querySelector("[data-splitting]");
+    const dot = document.querySelector(".dot");
+
+    if (title) {
+      const characters = Array.from(title.textContent);
+      const maxOffset = (characters.length - 1) / 2;
+      const fragment = document.createDocumentFragment();
+
+      characters.forEach((character, index) => {
+        const offset = index - maxOffset;
+        const span = document.createElement("span");
+        span.className = "char";
+        span.dataset.char = character;
+        span.style.setProperty("--char-offset", offset);
+        span.style.setProperty(
+          "--distance-percent",
+          maxOffset === 0 ? 0 : Math.abs(offset) / maxOffset
+        );
+        span.textContent = character;
+        fragment.appendChild(span);
+      });
+
+      title.replaceChildren(fragment);
+    }
+
+    function updateDotTravel() {
+      if (!title || !dot) return;
+
+      const distance = Math.max(0, title.offsetWidth - dot.offsetWidth);
+      dot.style.setProperty("--travel-start", `${-distance / 2}px`);
+      dot.style.setProperty("--travel-end", `${distance / 2}px`);
+    }
+
+    updateDotTravel();
+    window.addEventListener("resize", updateDotTravel);
+
+    window.setTimeout(() => {
+      sessionStorage.setItem("splash_visto", "true");
+      window.location.replace(TARGET_URL);
+    }, 6000);
+  </script>
+</body>
+</html>
