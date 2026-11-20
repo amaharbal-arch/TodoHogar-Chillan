@@ -83,6 +83,7 @@ nav .wrap {
   object-fit: contain;
   display: block;
 }
+
 .logo b {
   color: var(--or);
 }
@@ -295,7 +296,6 @@ model-viewer {
   margin-bottom: 10px;
 }
 
-/* Formato exacto para el cuadro de especificaciones técnicas */
 .specs-box {
   background: #f8fafc;
   border: 1px solid var(--g2);
@@ -433,7 +433,7 @@ select, .fld {
   background: #fff;
   border-radius: 14px;
   padding: 24px;
-  max-width: 440px;
+  max-width: 300px;
   width: 100%;
   position: relative;
 }
@@ -583,4 +583,39 @@ footer {
   .v3d, .two {
     grid-template-columns: 1fr;
   }
+}
+
+.pm-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pm-stack .pm,
+.pm-stack .btn {
+  width: 100%;
+  margin: 0;
+}
+
+.pm-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.pm-logos {
+  display: inline-flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.pm-logos svg {
+  display: inline-block;
+  flex: 0 0 auto;
+  height: 22px;
+  width: auto;
 }
