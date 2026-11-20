@@ -219,7 +219,10 @@ const Auth = (() => {
     $('authForm').addEventListener('submit', submit);
 
     $('btnGoogle').onclick = async () => {
-      await supabaseClient.auth.signInWithOAuth({ provider: 'google' });
+      await supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin + '/tienda.html' }
+      });
     };
 
     const { data } = await supabaseClient.auth.getSession();
@@ -336,31 +339,43 @@ const Checkout = (() => {
     methods(c);
   }
 
-  function methods(c){
+function methods(c){
     openModal(`<button class="x" onclick="Checkout.close()">×</button>
       <h3>Método de pago</h3>
       <p class="meta" style="margin-bottom:12px">Total: <b>${CLP(c.total)}</b> · Despacho a ${$('comuna').value}${$('inst').checked?' con instalación certificada':''}</p>
-      <label class="pm"><input type="radio" name="pm" value="flow" checked> <span>🌐 <b>Flow</b> (Pago Web / Tarjetas / Transferencia)<br><small class="meta">Ambiente Sandbox</small></span></label>
-      <label class="pm"><input type="radio" name="pm" value="credito"> 💳 Tarjeta de crédito (simulada)</label>
-      <label class="pm"><input type="radio" name="pm" value="debito"> 💳 Tarjeta de débito (simulada)</label>
-      <div id="cardFields" hidden>
-        <input class="fld" placeholder="Nombre en la tarjeta"><input class="fld" placeholder="4242 4242 4242 4242" maxlength="19" inputmode="numeric">
-        <div class="row"><input class="fld" placeholder="MM/AA" maxlength="5"><input class="fld" placeholder="CVV" maxlength="3" inputmode="numeric"></div>
-      </div>
-      <div class="row" style="margin-top:8px"><button class="btn o" style="flex:1" onclick="Checkout.close()">Cancelar</button>
-      <button class="btn" style="flex:1" id="goPay">Pagar ${CLP(c.total)}</button></div>`);
-    box().querySelectorAll('input[name=pm]').forEach(r => r.onchange = () => $('cardFields').hidden = r.value === 'flow');
-    $('goPay').onclick = () => {
-      const m = box().querySelector('input[name=pm]:checked').value;
-      m === 'flow' ? payWithFlow(c) : payWithCard(c);
-    };
+      <div class="pm-stack">
+        <label class="pm">
+          <input type="radio" name="pm" value="flow" checked>
+          <div class="pm-body">
+            <div>
+              <b>Flow</b> <span class="meta">(Pago Web · Tarjetas y Transferencias)</span>
+            </div>
+            <div class="pm-logos" aria-label="Medios aceptados en Chile">
+              <svg viewBox="0 0 64 24" height="22" width="48" role="img" aria-label="Visa" style="background:#fff;border:1px solid #e4e7eb;border-radius:4px;padding:2px 6px;">
+                <text x="6" y="17" font-family="system-ui,sans-serif" font-weight="900" font-style="italic" font-size="15" fill="#1a1f71">VISA</text>
+              </svg>
+              <svg viewBox="0 0 44 24" height="22" width="36" role="img" aria-label="Mastercard" style="background:#fff;border:1px solid #e4e7eb;border-radius:4px;padding:2px 6px;">
+                <circle cx="16" cy="12" r="8" fill="#eb001b"/>
+                <circle cx="28" cy="12" r="8" fill="#f79e1b" fill-opacity="0.85"/>
+              </svg>
+              <svg viewBox="0 0 24 24" height="22" width="28" role="img" aria-label="Débito / Crédito" style="background:#fff;border:1px solid #e4e7eb;border-radius:4px;padding:2px 6px;" fill="none" stroke="#1f2933" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="5" width="20" height="14" rx="2"/>
+                <line x1="2" y1="10" x2="22" y2="10"/>
+              </svg>
+              <svg viewBox="0 0 24 24" height="22" width="28" role="img" aria-label="Transferencia bancaria" style="background:#fff;border:1px solid #e4e7eb;border-radius:4px;padding:2px 6px;" fill="none" stroke="#1d4e89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 10l9-7 9 7"/>
+                <path d="M5 10v8M10 10v8M14 10v8M19 10v8"/>
+                <path d="M2 20h20"/>
+              </svg>
+            </div>
+          </div>
+        </label>
+        <button class="btn" id="goPay">Pagar ${CLP(c.total)}</button>
+        <button class="btn o" onclick="Checkout.close()">Cancelar</button>
+      </div>`);
+    $('goPay').onclick = () => payWithFlow(c);
   }
-
-  function payWithCard(c){
-    openModal('<p class="ok"><span class="big">⏳</span><br>Procesando pago…</p>');
-    setTimeout(() => success(c, 'Tarjeta simulada'), 1500);
-  }
-
+ 
   function flowPayload(c){
     const s = Auth.current(), order = 'TH-' + Date.now().toString().slice(-8);
     return { apiKey: FLOW_CONFIG.apiKey, commerceOrder: order, subject: 'Compra Todohogar Chillán',
