@@ -8,7 +8,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="stylesheet" href="style.css">
 <script>
-  if (sessionStorage.getItem("splash_visto") !== "true") {
+  const pSplash = new URLSearchParams(window.location.search);
+  const esRetornoPago = pSplash.get('token') || pSplash.get('paid') || pSplash.get('status');
+  if (!esRetornoPago && sessionStorage.getItem("splash_visto") !== "true") {
     window.location.replace("index.html");
   }
 </script>
