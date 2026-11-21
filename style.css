@@ -519,6 +519,13 @@ pre.code {
 
 .ok .big {
   font-size: 3rem;
+  line-height: 1.1;
+  display: block;
+}
+
+.ok .row {
+  justify-content: center;
+  margin-top: 6px;
 }
 
 footer {
