@@ -10,10 +10,9 @@
 <script>
   const params = new URLSearchParams(location.search);
   const esRetornoPago = params.get("token") || params.get("paid") || params.get("status");
-  if (!esRetornoPago && sessionStorage.getItem("splash_visto") !== "true") {
+  const esRetornoAuth = params.get("code") || location.hash.includes("access_token");
+  if (!esRetornoPago && !esRetornoAuth && sessionStorage.getItem("splash_visto") !== "true") {
     window.location.replace("index.html");
-  } else if (!esRetornoPago) {
-    sessionStorage.removeItem("splash_visto");
   }
 </script>
 </head>
@@ -92,9 +91,9 @@
         <div class="panel">
           <h3>Reglas de despacho</h3>
           <p class="meta">• Despacho base según zona (urbana, periurbana o rural).<br>
-    - Se aplica <b>recargo por carga pesada</b> si algún producto del carro supera 30 kg.<br>
-    - La instalación se cobra por producto instalable y varía según la zona.<br>
-    - Los valores son simulados para este prototipo.</p>
+- Se aplica <b>recargo por carga pesada</b> si algún producto del carro supera 30 kg.<br>
+- La instalación se cobra por producto instalable y varía según la zona.<br>
+- Los valores son simulados para este prototipo.</p>
         </div>
       </div>
     </section>
