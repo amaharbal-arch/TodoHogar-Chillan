@@ -427,10 +427,15 @@ function methods(c){
   }
 
   function success(c, method){
-    openModal(`<div class="ok"><span class="big">✅</span><h3 style="margin:10px 0">¡Compra Exitosa!</h3>
+    openModal(`<div class="ok"><span class="big">✅</span>
+      <h3 style="margin:10px 0 6px">¡Gracias por tu compra!</h3>
+      <p class="meta" style="margin-bottom:10px">Tu pedido en Todohogar Chillán fue procesado correctamente.</p>
       <p class="meta">Método: <b>${method}</b> · Total pagado: <b>${CLP(c.total)}</b></p>
-      <p class="meta" style="margin:8px 0 16px">Se ha registrado tu despacho a <b>${$('comuna').value}</b>${$('inst').checked?' con instalación domiciliaria':''}.</p>
-      <button class="btn" onclick="Cart.clear(); Checkout.close()">Aceptar y finalizar</button></div>`);
+      <p class="meta" style="margin:8px 0 18px">Despacho registrado a <b>${$('comuna').value}</b>${$('inst').checked?' con instalación domiciliaria':''}.</p>
+      <div class="row" style="gap:8px;flex-wrap:wrap">
+        <button class="btn" style="flex:1" onclick="Cart.clear(); Checkout.close()">Seguir comprando</button>
+        <button class="btn o" style="flex:1" onclick="Cart.clear(); Checkout.close(); window.scrollTo({top:0,behavior:'smooth'})">Volver a la página</button>
+      </div></div>`);
   }
 
   return {start, close};
