@@ -432,21 +432,35 @@ function methods(c){
     }
   }
 
-  function success(c, method){
+function success(c, method){
+    const comunaTexto = $('comuna').value || 'tu comuna';
     openModal(`<div class="ok"><span class="big">✅</span>
       <h3 style="margin:10px 0 6px">¡Gracias por tu compra!</h3>
       <p class="meta" style="margin-bottom:10px">Tu pedido en Todohogar Chillán fue procesado correctamente.</p>
       <p class="meta">Método: <b>${method}</b> · Total pagado: <b>${CLP(c.total)}</b></p>
-      <p class="meta" style="margin:8px 0 18px">Despacho registrado a <b>${$('comuna').value}</b>${$('inst').checked?' con instalación domiciliaria':''}.</p>
+      <p class="meta" style="margin:8px 0 18px">Despacho registrado a <b>${comunaTexto}</b>${$('inst').checked?' con instalación domiciliaria':''}.</p>
+      <p class="meta" style="margin-bottom:12px"><b>¿Quieres seguir comprando?</b></p>
       <div class="row" style="gap:8px;flex-wrap:wrap">
-        <button class="btn" style="flex:1" onclick="Cart.clear(); Checkout.close()">Seguir comprando</button>
-        <button class="btn o" style="flex:1" onclick="Cart.clear(); Checkout.close(); window.scrollTo({top:0,behavior:'smooth'})">Volver a la página</button>
+        <button class="btn" style="flex:1" onclick="Cart.clear(); Checkout.close()">Sí, seguir comprando</button>
+        <button class="btn o" style="flex:1" onclick="Cart.clear(); Checkout.close(); window.scrollTo({top:0,behavior:'smooth'})">Volver arriba</button>
       </div></div>`);
   }
-    function checkReturn(){ const r = localStorage.getItem('th_pending_order'); const p = new  URLSearchParams(location.search); if (!r || (!p.get('token') && !p.get('paid') && !p.get('status'))) return; localStorage.removeItem('th_pending_order'); try { const o = JSON.parse(r); if (o.comuna) $('comuna').value = o.comuna; $('inst').checked = !!o.inst; success({ total: o.total || 0 }, o.method || 'Flow'); history.replaceState({}, '', location.pathname); } catch (_) {} }
+
+  function checkReturn(){
+    const r = localStorage.getItem('th_pending_order');
+    const p = new URLSearchParams(location.search);
+    if (!r || (!p.get('token') && !p.get('paid') && !p.get('status'))) return;
+    localStorage.removeItem('th_pending_order');
+    try {
+      const o = JSON.parse(r);
+      if (o.comuna) $('comuna').value = o.comuna;
+      $('inst').checked = !!o.inst;
+      success({ total: o.total || 0 }, o.method || 'Flow');
+      history.replaceState({}, '', location.pathname);
+    } catch (_) {}
+  }
   return {start, close, checkReturn};
 })();
-
 document.addEventListener('DOMContentLoaded', () => {
   Auth.init();
   Cart.init();
