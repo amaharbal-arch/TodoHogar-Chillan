@@ -449,17 +449,26 @@ function success(c, method){
       </div></div>`);
   }
 
-  function checkReturn(){
+ function checkReturn(){
     const r = localStorage.getItem('th_pending_order');
     const p = new URLSearchParams(location.search);
-    if (!r || (!p.get('token') && !p.get('paid') && !p.get('status'))) return;
+    const status = p.get('status');
+    if (!r || (!p.get('token') && !p.get('paid') && !status)) return;
     localStorage.removeItem('th_pending_order');
     try {
       const o = JSON.parse(r);
       if (o.comuna) $('comuna').value = o.comuna;
       $('inst').checked = !!o.inst;
-      success({ total: o.total || 0 }, o.method || 'Flow');
-      Cart.clear();
+      if (status === 'rejected') {
+        openModal(`<div class="ok"><span class="big">❌</span>
+          <h3 style="margin:10px 0 6px">Pago rechazado o anulado</h3>
+          <p class="meta" style="margin-bottom:16px">No se completó el pago en Flow. Tu carro se limpiará para que intentes nuevamente.</p>
+          <button class="btn" onclick="Cart.clear(); Checkout.close()">Entendido</button>
+        </div>`);
+      } else {
+        success({ total: o.total || 0 }, o.method || 'Flow');
+      }
+      if (status !== 'rejected') Cart.clear();
       history.replaceState({}, '', location.pathname);
     } catch (_) {}
   }
