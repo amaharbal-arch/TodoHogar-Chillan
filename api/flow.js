@@ -3,12 +3,30 @@ const crypto = require('crypto');
 export default async function handler(req, res) {
   
 // Retorno desde Flow (GET o POST sin monto de creación de orden)
+ // Retorno desde Flow (GET o POST sin monto de creación de orden)
   if (!req.body?.amount) {
     const token = req.query?.token || req.body?.token || '';
-    const qs = token
-      ? `?status=success&token=${encodeURIComponent(token)}`
-      : '?status=success';
-    return res.redirect(303, `https://todohogarchillan.vercel.app/tienda.html${qs}`);
+    if (!token) {
+      return res.redirect(303, 'https://todohogarchillan.vercel.app/tienda.html?status=rejected');
+    }
+
+    try {
+      const apiKey = '359FDDFB-986D-4813-B1DA-21L879B274A9';
+      const secretKey = '25693da24b99461c9c71ae945371889033f02861';
+      const params = { apiKey, token };
+      const keys = Object.keys(params).sort();
+      const toSign = keys.map(k => `${k}${params[k]}`).join('');
+      const s = crypto.createHmac('sha256', secretKey).update(toSign).digest('hex');
+
+      const query = new URLSearchParams({ apiKey, token, s });
+      const statusRes = await fetch(`https://sandbox.flow.cl/api/payment/getStatus?${query}`);
+      const statusData = await statusRes.json();
+
+      const finalStatus = statusData?.status === 2 ? 'success' : 'rejected';
+      return res.redirect(303, `https://todohogarchillan.vercel.app/tienda.html?status=${finalStatus}&token=${encodeURIComponent(token)}`);
+    } catch (_) {
+      return res.redirect(303, 'https://todohogarchillan.vercel.app/tienda.html?status=rejected');
+    }
   }
 
   try {
