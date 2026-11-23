@@ -1,9 +1,14 @@
 const crypto = require('crypto');
 
 export default async function handler(req, res) {
-  // Permitir solo peticiones POST desde su frontend
-  if (req.method === 'POST' && !req.body?.amount) {
-    return res.redirect(303, 'https://todohogarchillan.vercel.app/?status=success');
+  
+// Retorno desde Flow (GET o POST sin monto de creación de orden)
+  if (!req.body?.amount) {
+    const token = req.query?.token || req.body?.token || '';
+    const qs = token
+      ? `?status=success&token=${encodeURIComponent(token)}`
+      : '?status=success';
+    return res.redirect(303, `https://todohogarchillan.vercel.app/tienda.html${qs}`);
   }
 
   try {
