@@ -204,9 +204,10 @@ const Auth = (() => {
     }
   }
 
-  async function logout(){
+ async function logout(){
     await supabaseClient.auth.signOut();
     currentUser = null;
+    Cart.clear();
     render();
   }
 
@@ -219,12 +220,12 @@ const Auth = (() => {
     $('authForm').addEventListener('submit', submit);
 
     $('btnGoogle').onclick = async () => {
+      Cart.saveTemp();
       await supabaseClient.auth.signInWithOAuth({
         provider: 'google',
         options: { redirectTo: window.location.origin + '/tienda.html' }
       });
     };
-
     const { data } = await supabaseClient.auth.getSession();
     currentUser = data.session?.user || null;
     render();
@@ -242,7 +243,8 @@ const Cart = (() => {
   let items = {};
   const add = id => { items[id] = (items[id]||0) + 1; update(); };
   const chg = (id, d) => { items[id] = (items[id]||0) + d; if (items[id] <= 0) delete items[id]; update(); };
-  const clear = () => { items = {}; localStorage.removeItem('th_cart'); update(); };
+  const clear = () => { items = {}; $('comuna').value = ''; $('inst').checked = false; localStorage.removeItem('th_cart'); sessionStorage.removeItem('th_oauth_cart'); update(); };
+  const saveTemp = () => { sessionStorage.setItem('th_oauth_cart', JSON.stringify({ items, comuna: $('comuna').value, inst: $('inst').checked })); };
   function calc(){
     const zone = ZONES[COMUNAS[$('comuna').value]] || null;
     const list = Object.entries(items).map(([id,q]) => ({p: PRODUCTS.find(x => x.id === id), q}));
@@ -273,14 +275,15 @@ const Cart = (() => {
         : `Recargo de ${CLP(z.heavy)} solo si tu carro incluye productos de más de 30 kg.`);
     $('instInfo').textContent = z ? `Desde ${CLP(18000*z.instX)} por producto instalable en tu zona.` : 'Disponible según tu comuna.';
     $('payErr').hidden = true;
-    localStorage.setItem('th_cart', JSON.stringify({ items, comuna: $('comuna').value, inst: $('inst').checked }));
   }
   
-  function init(){
+ function init(){
+    localStorage.removeItem('th_cart');
     $('comuna').innerHTML = '<option value="">Selecciona tu comuna…</option>' + Object.keys(COMUNAS).map(k => `<option>${k}</option>`).join('');
     $('comuna').onchange = update; $('inst').onchange = update;
     try {
-      const saved = JSON.parse(localStorage.getItem('th_cart'));
+      const saved = JSON.parse(sessionStorage.getItem('th_oauth_cart'));
+      sessionStorage.removeItem('th_oauth_cart');
       if (saved) {
         items = saved.items || {};
         if (saved.comuna) $('comuna').value = saved.comuna;
@@ -289,7 +292,7 @@ const Cart = (() => {
     } catch (_) {}
     update();
   }
-  return {init, add, chg, clear, calc};
+  return {init, add, chg, clear, calc, saveTemp};
 })();
 
 const Catalog = (() => {
@@ -381,7 +384,7 @@ function methods(c){
           </div>
         </label>
         <button class="btn" id="goPay">Pagar ${CLP(c.total)}</button>
-        <button class="btn o" onclick="Checkout.close()">Cancelar</button>
+        <button class="btn o" onclick="Checkout.close(); Cart.clear();">Cancelar</button>
       </div>`);
     $('goPay').onclick = () => payWithFlow(c);
   }
@@ -456,6 +459,7 @@ function success(c, method){
       if (o.comuna) $('comuna').value = o.comuna;
       $('inst').checked = !!o.inst;
       success({ total: o.total || 0 }, o.method || 'Flow');
+      Cart.clear();
       history.replaceState({}, '', location.pathname);
     } catch (_) {}
   }
