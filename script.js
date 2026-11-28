@@ -57,7 +57,48 @@ const PRODUCTS = [
     glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794012825/estufa_3d_wood_stove_wmwohu.glb', 
     img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794012817/estufa_aueaab.png'
   },
-
+ {
+    id: 'aire_split_negro', 
+    name: 'Aire Acondicionado Split Inverter Negro', 
+    cat: 'Carga pesada', 
+    price: 389990, 
+    pesoKg: 42, 
+    inst: 55000, 
+    emoji: '❄️', 
+    bg: '#ffffff',
+    desc: 'Equipo de climatización frío/calor de bajo consumo con unidades interior y exterior. Activa recargo por carga pesada.',
+    specs: '<b>Capacidad:</b> 12.000 BTU<br><b>Tecnología:</b> Inverter A++<br><b>Incluye:</b> Kit de cañerías y control',
+    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1795826181/Black_Air_condition_3D_oqboxe.glb',
+    img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1795826181/Black_Air_condition_byz4tj.png'
+  },
+  {
+    id: 'tina_bano_lujo', 
+    name: 'Tina de Baño Exenta de Diseño Moderno', 
+    cat: 'Carga pesada', 
+    price: 459900, 
+    pesoKg: 58, 
+    inst: 45000, 
+    emoji: '🛁', 
+    bg: '#ffffff',
+    desc: 'Bañera independiente de acrílico sanitario reforzado de alta retención térmica. Activa recargo por carga pesada.',
+    specs: '<b>Dimensiones:</b> 170 x 80 x 58 cm<br><b>Capacidad:</b> 240 litros<br><b>Desagüe:</b> Pop-up cromado incluido',
+    glbSrc: '',
+    img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1795826181/Modern_Luxury_Bathroom_Bathtub_ejwta6.png'
+  },
+  {
+    id: 'termo_solar', 
+    name: 'Termo Solar Presurizado para Agua Caliente', 
+    cat: 'Carga pesada', 
+    price: 629990, 
+    pesoKg: 75, 
+    inst: 70000, 
+    emoji: '☀️', 
+    bg: '#ffffff',
+    desc: 'Sistema solar térmico con tubos al vacío y estanque de acero inoxidable para ahorro energético en techumbre. Activa recargo por carga pesada.',
+    specs: '<b>Capacidad:</b> 200 litros<br><b>Tubos:</b> 20 tubos tricapa<br><b>Estanque:</b> Acero inox SUS304',
+    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1795826191/solar_water_heater-_anil_jn5wru.glb',
+    img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1795826181/Solar_Water_Heater-_Anil_wdqkul.png'
+  },
   // --- 4 PRODUCTOS COMPLEMENTARIOS ---
   {
     id: 'taladro', 
