@@ -132,7 +132,7 @@ const PRODUCTS = [
     cat: 'Accesorios',
     price: 19990,
     pesoKg: 2,
-    inst: 12000,
+    inst: 0, // <-- antes tenía 12000
     emoji: '💡',
     bg: '#ffffff',
     desc: 'Lámpara de muro decorativa con base de bronce envejecido y pantalla de vidrio opal con relieve.',
@@ -147,7 +147,7 @@ const PRODUCTS = [
     cat: 'Mejoramiento',
     price: 89990,
     pesoKg: 24,
-    inst: 18000,
+    inst: 0, // <-- antes tenía 18000
     emoji: '🚰',
     bg: '#ffffff',
     desc: 'Mueble de piso con patas cromadas y lavamanos de loza incorporado, optimizado para espacios modernos.',
@@ -330,7 +330,13 @@ const Cart = (() => {
       : `<b>${z.label}</b> · despacho base ${CLP(z.base)}. ` + (c.heavy
         ? `⚠️ Aplica recargo por carga pesada: <b>${CLP(z.heavy)}</b>.`
         : `Recargo de ${CLP(z.heavy)} solo si tu carro incluye productos de más de 30 kg.`);
-    $('instInfo').textContent = z ? `Desde ${CLP(18000*z.instX)} por producto instalable en tu zona.` : 'Disponible según tu comuna.';
+    const instalables = c.list.filter(i => i.p.inst > 0);
+const minCatalogo = Math.min(...PRODUCTS.filter(p => p.inst > 0).map(p => p.inst));
+$('instInfo').textContent = !z
+  ? 'Opcional para productos principales, según tu comuna.'
+  : instalables.length
+    ? `Desde ${CLP(minCatalogo * z.instX)} por producto principal instalable en tu zona.`
+    : 'No aplica a los productos complementarios en tu carro.';
     $('payErr').hidden = true;
   }
   
