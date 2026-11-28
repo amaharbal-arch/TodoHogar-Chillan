@@ -13,58 +13,65 @@ const FLOW_CONFIG = {
 /* =====================================================================
    ESTRUCTURA DE PRODUCTOS (3 Principales + 4 Complementarios, todos con 3D)
    ===================================================================== */
+/* =====================================================================
+   ESTRUCTURA DE PRODUCTOS (6 Principales + 4 Complementarios, todos con 3D)
+   ===================================================================== */
 const PRODUCTS = [
-  // --- 3 PRODUCTOS PRINCIPALES ---
+  // --- 6 PRODUCTOS PRINCIPALES ---
   {
-    id: 'casco', 
-    name: 'Panel Techo Metalpol', 
-    cat: 'Mejoramiento', 
-    price: 34990, 
-    pesoKg: 12, 
-    inst: 15000, 
-    emoji: '🧱', 
+    id: 'casco',
+    group: 'main',
+    name: 'Panel Techo Metalpol',
+    cat: 'Mejoramiento',
+    price: 34990,
+    pesoKg: 12,
+    inst: 15000,
+    emoji: '🧱',
     bg: '#ffffff',
     desc: 'Panel sándwich estructural para techumbre y cubiertas con aislación térmica incorporada. Máxima eficiencia para el clima de Ñuble.',
     specs: '<b>Dimensiones:</b> 1x2m<br><b>Espesor:</b> 50mm<br><b>Aislación:</b> Poliuretano',
     glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1793832812/panel_techo_metalpol_gpumu8.glb',
-    img:'https://res.cloudinary.com/deqk2tmer/image/upload/v1793840292/panel_jsscju.png'
+    img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1793840292/panel_jsscju.png'
   },
   {
-    id: 'vanitorio_madera', 
-    name: 'Vanitorio de Madera Noble con Cubierta de Mármol', 
-    cat: 'Mejoramiento', 
-    price: 149900, 
-    pesoKg: 32, 
-    inst: 25000, 
-    emoji: '🪞', 
+    id: 'vanitorio_madera',
+    group: 'main',
+    name: 'Vanitorio de Madera Noble con Cubierta de Mármol',
+    cat: 'Mejoramiento',
+    price: 149900,
+    pesoKg: 32,
+    inst: 25000,
+    emoji: '🪞',
     bg: '#ffffff',
     desc: 'Mueble vanitorio de madera con lavavoz empotrado y cajonera lateral. Diseño elegante para baños residenciales. Activa recargo por carga pesada.',
     specs: '<b>Dimensiones:</b> 100 x 50 x 85 cm<br><b>Material:</b> Madera noble y mármol sintético<br><b>Incluye:</b> Grifería monomando',
-    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794012647/Bathroom_vanity_3D_qewkny.glb', 
+    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794012647/Bathroom_vanity_3D_qewkny.glb',
     img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794012637/Bathroom_vanity_fdyz5p.png'
   },
   {
-    id: 'estufa_pellet', 
-    name: 'Estufa a Pellet de Alta Eficiencia', 
-    cat: 'Carga pesada', 
-    price: 549990, 
-    pesoKg: 85, 
-    inst: 60000, 
-    emoji: '🔥', 
+    id: 'estufa_pellet',
+    group: 'main',
+    name: 'Estufa a Pellet de Alta Eficiencia',
+    cat: 'Carga pesada',
+    price: 549990,
+    pesoKg: 85,
+    inst: 60000,
+    emoji: '🔥',
     bg: '#ffffff',
     desc: 'Sistema de calefacción ecológica para el hogar con estanque de alta capacidad. Ideal para el invierno en Ñuble.',
     specs: '<b>Potencia:</b> 9 kW (hasta 120 m²)<br><b>Estanque:</b> 15 kg<br><b>Consumo:</b> 0.8 - 1.8 kg/h',
-    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794012825/estufa_3d_wood_stove_wmwohu.glb', 
+    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794012825/estufa_3d_wood_stove_wmwohu.glb',
     img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794012817/estufa_aueaab.png'
   },
- {
-    id: 'aire_split_negro', 
-    name: 'Aire Acondicionado Split Inverter Negro', 
-    cat: 'Carga pesada', 
-    price: 389990, 
-    pesoKg: 42, 
-    inst: 55000, 
-    emoji: '❄️', 
+  {
+    id: 'aire_split_negro',
+    group: 'main',
+    name: 'Aire Acondicionado Split Inverter Negro',
+    cat: 'Carga pesada',
+    price: 389990,
+    pesoKg: 42,
+    inst: 55000,
+    emoji: '❄️',
     bg: '#ffffff',
     desc: 'Equipo de climatización frío/calor de bajo consumo con unidades interior y exterior. Activa recargo por carga pesada.',
     specs: '<b>Capacidad:</b> 12.000 BTU<br><b>Tecnología:</b> Inverter A++<br><b>Incluye:</b> Kit de cañerías y control',
@@ -72,88 +79,97 @@ const PRODUCTS = [
     img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1795826181/Black_Air_condition_byz4tj.png'
   },
   {
-    id: 'tina_bano_lujo', 
-    name: 'Tina de Baño Exenta de Diseño Moderno', 
-    cat: 'Carga pesada', 
-    price: 459900, 
-    pesoKg: 58, 
-    inst: 45000, 
-    emoji: '🛁', 
+    id: 'tina_bano_lujo',
+    group: 'main',
+    name: 'Tina de Baño Exenta de Diseño Moderno',
+    cat: 'Carga pesada',
+    price: 459900,
+    pesoKg: 58,
+    inst: 45000,
+    emoji: '🛁',
     bg: '#ffffff',
     desc: 'Bañera independiente de acrílico sanitario reforzado de alta retención térmica. Activa recargo por carga pesada.',
     specs: '<b>Dimensiones:</b> 170 x 80 x 58 cm<br><b>Capacidad:</b> 240 litros<br><b>Desagüe:</b> Pop-up cromado incluido',
-    glbSrc: '',
-    img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1795826181/Modern_Luxury_Bathroom_Bathtub_ejwta6.png'
+    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1795826874/bathtub_imljzy.glb',
+    img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1795826792/Modern_Luxury_Bathroom_Bathtub_vcsrwa.png'
   },
   {
-    id: 'termo_solar', 
-    name: 'Termo Solar Presurizado para Agua Caliente', 
-    cat: 'Carga pesada', 
-    price: 629990, 
-    pesoKg: 75, 
-    inst: 70000, 
-    emoji: '☀️', 
+    id: 'termo_solar',
+    group: 'main',
+    name: 'Termo Solar Presurizado para Agua Caliente',
+    cat: 'Carga pesada',
+    price: 629990,
+    pesoKg: 75,
+    inst: 70000,
+    emoji: '☀️',
     bg: '#ffffff',
     desc: 'Sistema solar térmico con tubos al vacío y estanque de acero inoxidable para ahorro energético en techumbre. Activa recargo por carga pesada.',
     specs: '<b>Capacidad:</b> 200 litros<br><b>Tubos:</b> 20 tubos tricapa<br><b>Estanque:</b> Acero inox SUS304',
     glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1795826191/solar_water_heater-_anil_jn5wru.glb',
     img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1795826181/Solar_Water_Heater-_Anil_wdqkul.png'
   },
+
   // --- 4 PRODUCTOS COMPLEMENTARIOS ---
   {
-    id: 'taladro', 
-    name: 'Taladro Percutor Inalámbrico 20V', 
-    cat: 'Herramientas', 
-    price: 89990, 
-    pesoKg: 5, 
-    inst: 0, 
-    emoji: '🔧', 
+    id: 'taladro',
+    group: 'extra',
+    name: 'Taladro Percutor Inalámbrico 20V',
+    cat: 'Herramientas',
+    price: 89990,
+    pesoKg: 5,
+    inst: 0,
+    emoji: '🔧',
     bg: '#ffffff',
     desc: 'Taladro percutor a batería de litio 20V con maleta y accesorios para instalaciones domiciliarias.',
     specs: '<b>Mandril:</b> 13 mm autoperforante<br><b>Batería:</b> 2.0 Ah Ion-Litio<br><b>Torque:</b> 50 Nm',
-    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1793999107/taladro_parkside_lidl_wuiylf.glb', 
+    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1793999107/taladro_parkside_lidl_wuiylf.glb',
     img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1793999100/taladro_ekcx2b.png'
   },
   {
-    id: 'lampara_mural', 
-    name: 'Apliqué de Pared Estilo Clásico con Cúpula', 
-    cat: 'Accesorios', 
-    price: 19990, 
-    pesoKg: 2, 
-    inst: 12000, 
+    id: 'lampara_mural',
+    group: 'extra',
+    name: 'Apliqué de Pared Estilo Clásico con Cúpula',
+    cat: 'Accesorios',
+    price: 19990,
+    pesoKg: 2,
+    inst: 12000,
+    emoji: '💡',
     bg: '#ffffff',
     desc: 'Lámpara de muro decorativa con base de bronce envejecido y pantalla de vidrio opal con relieve.',
     specs: '<b>Socket:</b> E27 (compatible LED)<br><b>Material:</b> Aleación metálica y vidrio texturizado<br><b>Uso:</b> Interior / Exterior techado',
-    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013036/victorian_wall_lamp_cxmzct.glb', 
+    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013036/victorian_wall_lamp_cxmzct.glb',
     img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013028/lampara_oigotu.png'
   },
- {
-    id: 'vanitorio_ceramica', 
-    name: 'Vanitorio Compacto con Loza Blanca', 
-    cat: 'Mejoramiento', 
-    price: 89990, 
-    pesoKg: 24, 
-    inst: 18000, 
+  {
+    id: 'vanitorio_ceramica',
+    group: 'extra',
+    name: 'Vanitorio Compacto con Loza Blanca',
+    cat: 'Mejoramiento',
+    price: 89990,
+    pesoKg: 24,
+    inst: 18000,
+    emoji: '🚰',
     bg: '#ffffff',
     desc: 'Mueble de piso con patas cromadas y lavamanos de loza incorporado, optimizado para espacios modernos.',
     specs: '<b>Dimensiones:</b> 60 x 45 x 80 cm<br><b>Material:</b> Melamina antihumedad y loza<br><b>Uso:</b> Baños principales o de visitas',
-    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013140/sink_with_faucet_g7qbu5.glb', 
+    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013140/sink_with_faucet_g7qbu5.glb',
     img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013137/lavamano_qfe0yz.png'
   },
- {
-    id: 'caja_herramientas', 
-    name: 'Caja de Herramientas Modular de Alto Impacto', 
-    cat: 'Herramientas', 
-    price: 24990, 
-    pesoKg: 4, 
-    inst: 0, 
-    emoji: '📦', 
+  {
+    id: 'caja_herramientas',
+    group: 'extra',
+    name: 'Caja de Herramientas Modular de Alto Impacto',
+    cat: 'Herramientas',
+    price: 24990,
+    pesoKg: 4,
+    inst: 0,
+    emoji: '📦',
     bg: '#ffffff',
     desc: 'Maleta organizadora reforzada con cierres metálicos y bandeja interior para herramientas de mano y accesorios.',
     specs: '<b>Material:</b> Polímero industrial reforzado<br><b>Capacidad:</b> 22 pulgadas<br><b>Seguridad:</b> Cierres metálicos antideslizantes',
-    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013242/toolbox_dpoevg.glb', 
+    glbSrc: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013242/toolbox_dpoevg.glb',
     img: 'https://res.cloudinary.com/deqk2tmer/image/upload/v1794013238/caja_de_herramientas_gjlplh.png'
-  },
+  }
 ];
 
 const ZONES = {
@@ -352,9 +368,13 @@ const Catalog = (() => {
   function render(filter = ''){
     const f = filter.toLowerCase();
     const list = PRODUCTS.filter(p => (p.name + ' ' + p.cat).toLowerCase().includes(f));
-    const main = list.slice(0, 3), extra = list.slice(3, 7);
-    $('gridMain').innerHTML = main.map(card).join(''); $('gridExtra').innerHTML = extra.map(card).join('');
-    $('grpMain').hidden = !main.length; $('grpExtra').hidden = !extra.length; $('noRes').hidden = list.length > 0;
+    const main = list.filter(p => p.group === 'main');
+    const extra = list.filter(p => p.group === 'extra');
+    $('gridMain').innerHTML = main.map(card).join('');
+    $('gridExtra').innerHTML = extra.map(card).join('');
+    $('grpMain').hidden = !main.length;
+    $('grpExtra').hidden = !extra.length;
+    $('noRes').hidden = list.length > 0;
   }
   return {init: () => { $('q').oninput = e => render(e.target.value); render(); }};
 })();
@@ -364,11 +384,12 @@ const Viewer3D = (() => {
   function load(id){
     const p = PRODUCTS.find(x => x.id === id); if (!p || !p.glbSrc) return;
     currentId = id;
-    $('mv').src = p.glbSrc; 
+    $('mv').src = p.glbSrc;
     $('mv').alt = 'Modelo 3D: ' + p.name;
     $('mvTitle').textContent = p.name;
     $('mvDesc').textContent = p.desc;
-    $('mvSpecs').innerHTML = `<b>Especificaciones Técnicas:</b><br>` + (p.specs || '');
+    const pesoTag = p.pesoKg > 30 ? `${p.pesoKg} kg (Carga pesada)` : `${p.pesoKg} kg`;
+    $('mvSpecs').innerHTML = `<b>Especificaciones Técnicas:</b><br><b>Peso aprox.:</b> ${pesoTag}<br>` + (p.specs || '');
   }
   const show = id => { load(id); $('simulador').scrollIntoView({behavior:'smooth'}); };
   function init(){
